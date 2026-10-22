@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ribbon Guardians</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#5a1a3c;--panel:#241845;--panel2:#2e2058;--line:#4a3a7a;--ink:#1a0716;--fg:#fff0f7;--dim:#cdb4d8;--pink:#ff5fa8;--lite:#ffc2e0;--gold:#ffd166;--teal:#6ef0d2;
+color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1535;--panel:#241845;--fg:#fff0f7;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1535;--panel:#241845;--fg:#fff0f7}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;font-family:"Pixelify Sans","Trebuchet MS",system-ui,sans-serif}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#ov{position:fixed;inset:0;z-index:5;display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));background:rgba(70,12,44,.42);overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
+#ov.off{display:none}
+.panel{margin:auto;max-width:740px;width:100%;text-align:center;background:var(--panel);padding:22px 18px 18px;box-shadow:0 0 0 3px var(--ink),0 0 0 6px var(--line),0 0 0 9px var(--ink),8px 10px 0 9px rgba(0,0,0,.35)}
+h1{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(22px,6vw,42px);line-height:1.25;margin:4px 0 8px;color:var(--pink);text-shadow:3px 3px 0 #5a1040,6px 6px 0 var(--ink)}
+h2{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(13px,3.4vw,18px);line-height:1.5;margin:0 0 10px;color:var(--lite)}
+h3{font-family:"Press Start 2P",monospace;font-weight:400;font-size:10px;margin:14px 0 6px;color:var(--gold);line-height:1.6;text-align:left}
+p{font-size:17px;line-height:1.45;color:var(--dim);margin:8px auto;max-width:62ch}
+.small{font-size:14px}
+.btn{font-family:"Press Start 2P",monospace;font-size:11px;line-height:1.4;background:var(--pink);color:#2a0820;border:0;padding:13px 18px;margin:6px 4px;cursor:pointer;box-shadow:inset -3px -4px 0 #b8306f,inset 3px 3px 0 #ff9cc9,0 0 0 3px var(--ink)}
+.btn:active{transform:translateY(2px)}
+.btn.alt{background:var(--panel2);color:var(--fg);box-shadow:inset -3px -4px 0 #1a1238,inset 3px 3px 0 #4a3a7a,0 0 0 3px var(--ink)}
+.btn.danger{background:#b3122e;color:#fff;box-shadow:inset -3px -4px 0 #6a0618,inset 3px 3px 0 #e8445e,0 0 0 3px var(--ink)}
+.btn.alt.warn{color:#ff9aa6}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn:focus-visible,.card:focus-visible,.tab:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.row{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin:12px 0}
+.card{background:var(--panel2);border:0;color:var(--fg);font:inherit;text-align:left;padding:12px;cursor:pointer;box-shadow:0 0 0 3px var(--ink),inset 0 0 0 2px var(--line);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.card:hover{box-shadow:0 0 0 3px var(--ink),inset 0 0 0 2px var(--pink)}
+.card.sel{box-shadow:0 0 0 3px var(--ink),inset 0 0 0 3px var(--gold)}
+.card.lock{opacity:.7}
+.card .t{font-family:"Press Start 2P",monospace;font-size:10px;line-height:1.5;color:var(--lite)}
+.card .m{font-family:"Press Start 2P",monospace;font-size:8px;line-height:1.6;color:var(--gold)}
+.card .d{font-size:16px;line-height:1.3;color:var(--fg)}
+.card .r{font-size:14px;line-height:1.35;color:var(--teal)}
+.card .ic{display:flex;gap:10px;align-items:center}
+canvas.spr,img.ico{image-rendering:pixelated;image-rendering:crisp-edges}
+.fact{background:#1a1238;color:var(--teal);padding:12px 14px;margin:14px auto;text-align:left;box-shadow:0 0 0 2px var(--line);max-width:60ch}
+.fact b{font-family:"Press Start 2P",monospace;font-weight:400;font-size:9px;color:var(--gold);display:block;margin-bottom:6px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:6px 0 10px}
+.tab{font-family:"Press Start 2P",monospace;font-size:9px;background:transparent;color:var(--dim);border:0;padding:10px 9px;cursor:pointer;box-shadow:inset 0 -3px 0 var(--line)}
+.tab.on{color:var(--gold);box-shadow:inset 0 -3px 0 var(--gold)}
+.stats{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.stats div{font-size:14px;color:var(--dim)}.stats b{display:block;font-family:"Press Start 2P",monospace;font-weight:400;font-size:16px;color:var(--fg);margin-bottom:6px}
+.bars{max-width:440px;margin:8px auto;text-align:left}
+.bar{display:grid;grid-template-columns:140px 1fr 60px;gap:8px;align-items:center;font-size:14px;margin:5px 0;color:var(--fg)}
+.bar i{display:block;height:10px;background:var(--pink);box-shadow:0 0 0 2px var(--ink)}
+.bar span:last-child{text-align:right;color:var(--dim)}
+.ans{display:grid;gap:10px;max-width:540px;margin:12px auto}
+.ans .btn{text-align:left;font-family:"Pixelify Sans",system-ui,sans-serif;font-size:18px;line-height:1.3;padding:12px 14px;margin:0}
+.ans .btn:disabled{opacity:1}
+.nm{font-family:"Press Start 2P",monospace;font-size:11px;line-height:1.5;color:var(--lite)}
+.ans .btn.good{background:var(--teal);box-shadow:inset -3px -4px 0 #2a9a80,0 0 0 3px var(--ink)}
+.ans .btn.bad{background:#ff8a9a;box-shadow:inset -3px -4px 0 #a03040,0 0 0 3px var(--ink)}
+.list{text-align:left;max-width:58ch;margin:0 auto;padding-left:22px;color:var(--fg);font-size:17px;line-height:1.5}
+.sec{text-align:left;max-width:60ch;margin:0 auto}
+.sec p{text-align:left;margin:4px 0 10px;color:var(--fg)}
+.sub{color:var(--teal);font-size:15px;margin:0 0 8px}
+a{color:var(--teal)}
+.pips{letter-spacing:2px;color:var(--gold);font-family:"Press Start 2P",monospace;font-size:8px}
+.keys{font-size:14px;color:var(--dim);line-height:1.5}
+.keys b{color:var(--fg);font-weight:600}
+#tip{position:fixed;left:50%;bottom:calc(112px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:3;width:max-content;max-width:min(560px,calc(100vw - 32px));background:rgba(26,18,56,.94);color:var(--fg);padding:10px 14px;font-size:16px;line-height:1.35;box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--teal);pointer-events:none;opacity:0;transition:opacity .25s}
+#tip.on{opacity:1}
+#tip b{font-family:"Press Start 2P",monospace;font-weight:400;font-size:9px;color:var(--teal);display:block;margin-bottom:6px}
+#hb{position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:3;display:none;gap:8px}
+body.play #hb{display:flex}
+#hb .btn{margin:0;padding:10px 12px;font-size:9px}
+#db{display:none;position:fixed;right:18px;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:3;width:86px;height:86px;border:0;background:rgba(255,95,168,.22);color:var(--lite);font:10px "Press Start 2P",monospace;box-shadow:0 0 0 3px var(--pink),0 0 0 6px var(--ink);touch-action:none;border-radius:50%}
+@media (pointer:coarse){body.play #db{display:block}}
+body.touch.play #db{display:block}
+@media (max-height:440px){#tip{bottom:calc(14px + env(safe-area-inset-bottom,0px));font-size:13px;max-width:min(420px,calc(100vw - 260px))}.panel{padding:14px 12px}h1{font-size:22px}#db{width:72px;height:72px}}
+.pw{font-family:"Press Start 2P",monospace;font-size:13px;width:min(100%,320px);padding:14px 12px;margin:10px auto 4px;display:block;background:#1a1238;color:var(--fg);border:0;box-shadow:0 0 0 3px var(--ink),inset 0 0 0 2px var(--line);text-align:center;user-select:text;-webkit-user-select:text;touch-action:manipulation}
+.pw:focus{outline:3px solid var(--gold);outline-offset:4px}
+.pwmsg{min-height:1.5em;font-size:15px}
+#tb{display:none;position:fixed;right:30px;bottom:calc(122px + env(safe-area-inset-bottom,0px));z-index:3;width:62px;height:62px;border:0;background:rgba(201,184,255,.22);color:#efe8ff;font:9px "Press Start 2P",monospace;box-shadow:0 0 0 3px #c9b8ff,0 0 0 6px var(--ink);touch-action:none;border-radius:50%}
+@media (pointer:coarse){body.play.chrono #tb{display:block}}
+body.touch.play.chrono #tb{display:block}
+.panel.compact{max-width:560px;padding:14px 12px 10px}
+.panel.compact h2{font-size:12px;margin:0 0 4px}
+.panel.compact>p.small{font-size:12.5px;margin:4px auto;line-height:1.35}
+.panel.compact .cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin:8px 0}
+.panel.compact .card{padding:8px;gap:4px}
+.panel.compact .card .ic{gap:8px}
+.panel.compact .card img.ico{width:30px;height:30px}
+.panel.compact .card .t{font-size:8px}
+.panel.compact .card .m{font-size:7px}
+.panel.compact .card .d{font-size:14px;line-height:1.25}
+.panel.compact .card .r{font-size:12px;line-height:1.3}
+.panel.compact .row{margin-top:2px}
+.panel.compact .btn{font-size:9px;padding:9px 12px;margin:4px}
+#crt{position:fixed;inset:0;pointer-events:none;z-index:4;background:repeating-linear-gradient(0deg,rgba(0,0,0,.1) 0 1px,transparent 1px 3px)}
+body.nofx #crt{display:none}
+@media (prefers-reduced-motion:reduce){#tip{transition:none}}
+@media (max-width:480px){#tip{font-size:14px;padding:8px 10px;bottom:calc(124px + env(safe-area-inset-bottom,0px))}.panel{padding:18px 12px 14px}.cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.bar{grid-template-columns:110px 1fr 48px}}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<div id="crt"></div>
+<div id="tip" role="status" aria-live="polite"></div>
+<div id="hb"><button class="btn alt" data-hb="p" aria-label="Pause">II</button><button class="btn alt" data-hb="s" aria-label="Toggle sound">SND</button></div>
+<button id="db" aria-label="Dash">DASH</button>
+<button id="tb" aria-label="Time stop">TIME</button>
+<div id="ov" class="off"></div>
+<script>
+'use strict';
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),ov=document.getElementById('ov'),tipEl=document.getElementById('tip');
+let W=0,H=0,DPR=1,Z=1,S='menu',G=null,last=0,joy=null,dashReq=0,tsReq=0,AC=null,tipT=0,vig=null;
+const TAU=Math.PI*2,rnd=(a,b)=>a+Math.random()*(b-a),pick1=a=>a[Math.random()*a.length|0],clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const fmt=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
+const keys={},WW=4800,WH=3400,CAM={x:WW/2,y:WH/2},SAFE={t:0,b:0};
+const VW=()=>W/Z,VH=()=>H/Z;
+
+/* ---------- save data ---------- */
+const SKEY='ribbon_guardians_v2';
+const DEF={hope:0,best:0,meta:{},heroes:{tcell:1},hero:'tcell',seen:{},quiz:{},stats:{runs:0,kills:0,wins:0,long:0},set:{mute:false,music:true,vol:1,fx:true,info:true}};
+let SAVE=JSON.parse(JSON.stringify(DEF));
+try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');
+ if(s){Object.assign(SAVE,s);for(const k of['meta','heroes','seen','quiz','stats','set'])SAVE[k]=Object.assign({},DEF[k],s[k]||{})}
+ else{try{SAVE.set.fx=!matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}}}catch(e){}
+SAVE.heroes.tcell=1;
+function save(){SAVE.ts=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(SAVE))}catch(e){}if(typeof cloudPush==='function')cloudPush()}
+function applyFx(){document.body.classList.toggle('nofx',!SAVE.set.fx)}
+
+/* ---------- screen ---------- */
+const probe=document.createElement('div');
+probe.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)';
+document.body.appendChild(probe);
+let LOWQ=false,PTCAP=600;
+function rs(){DPR=Math.min(devicePixelRatio||1,LOWQ?1:2);W=innerWidth;H=innerHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+ Z=Math.min(W,H)<560?2/3:1;const cs=getComputedStyle(probe);SAFE.t=parseFloat(cs.paddingTop)||0;SAFE.b=parseFloat(cs.paddingBottom)||0;vig=null}
+addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,250));if(window.visualViewport)visualViewport.addEventListener('resize',rs);rs();
+
+/* ---------- sound ---------- */
+function snd(f,d=.08,t='square',v=.04,f2){if(SAVE.set.mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
+ const n=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.setValueAtTime(f,n);if(f2)o.frequency.exponentialRampToValueAtTime(f2,n+d);
+ g.gain.setValueAtTime(v*SAVE.set.vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+d+.02)}catch(e){}}
+function unlockAudio(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const b=AC.createBuffer(1,1,22050),s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start(0)}catch(e){}}
+for(const ev of['pointerdown','touchstart','keydown'])addEventListener(ev,function u(){unlockAudio();removeEventListener(ev,u,true)},true);
+const MUS=[[330,0,392,0,440,392,330,0,294,0,330,0,392,330,294,0],[294,0,349,0,440,349,294,0,262,0,294,0,349,294,262,0],[262,0,330,0,392,330,262,0,247,0,262,0,330,262,247,0],[392,0,466,0,523,466,392,0,349,0,392,0,466,392,349,0],[440,0,523,0,659,523,440,0,392,0,440,0,523,440,494,0]];
+const BAS=[[110,0,0,110,0,0,131,0,98,0,0,98,0,0,110,0],[98,0,0,98,0,0,117,0,87,0,0,87,0,0,98,0],[87,0,0,87,0,0,104,0,82,0,0,82,0,0,87,0],[131,0,0,131,0,0,156,0,117,0,0,117,0,0,131,0],[110,0,0,110,0,0,87,0,98,0,0,98,0,0,82,0]];
+let ms=0;
+setInterval(()=>{if(S!=='play'||SAVE.set.mute||!SAVE.set.music||!G||G.intro>0)return;const i=ms++%16,si=G.stage,k=G.en.some(e=>e.B)?1.26:1;
+ if(MUS[si][i])snd(MUS[si][i]*k,.16,'triangle',.018);if(BAS[si][i])snd(BAS[si][i]*k,.28,'square',.013)},190);
+
+/* =================== PIXEL ART =================== */
+const INK='#1a0716',SC=3;
+function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
+function rows(R,P){const h=R.length,w=Math.max(...R.map(r=>r.length)),c=mk(w,h),x=c.getContext('2d');
+ R.forEach((r,j)=>{for(let i=0;i<r.length;i++){const ch=r[i];if(ch!=='.'&&P[ch]){x.fillStyle=P[ch];x.fillRect(i,j,1,1)}}});return c}
+function outline(c,col=INK){const w=c.width+2,h=c.height+2,t=mk(w,h),tx=t.getContext('2d');
+ for(const[dx,dy]of[[0,1],[2,1],[1,0],[1,2]])tx.drawImage(c,dx,dy);
+ tx.globalCompositeOperation='source-in';tx.fillStyle=col;tx.fillRect(0,0,w,h);tx.globalCompositeOperation='source-over';tx.drawImage(c,1,1);return t}
+function sil(c,col='#fff'){const o=mk(c.width,c.height),x=o.getContext('2d');x.drawImage(c,0,0);x.globalCompositeOperation='source-in';x.fillStyle=col;x.fillRect(0,0,o.width,o.height);return o}
+function pxl(x,c,i,j,w=1,h=1){x.fillStyle=c;x.fillRect(Math.round(i),Math.round(j),w,h)}
+function disc(x,cx,cy,r,c){x.fillStyle=c;for(let j=Math.floor(cy-r);j<=cy+r;j++)for(let i=Math.floor(cx-r);i<=cx+r;i++)if(Math.hypot(i+.5-cx,j+.5-cy)<=r)x.fillRect(i,j,1,1)}
+function ring(x,cx,cy,r,c){x.fillStyle=c;for(let j=Math.floor(cy-r-1);j<=cy+r+1;j++)for(let i=Math.floor(cx-r-1);i<=cx+r+1;i++)if(Math.abs(Math.hypot(i+.5-cx,j+.5-cy)-r)<.55)x.fillRect(i,j,1,1)}
+/* shaded blob, light from top-left, with dithered transitions */
+function blob(x,cx,cy,rx,ry,P,o={}){const wb=o.wob||0,wf=o.wf||5,wp=o.wp||0;
+ for(let j=Math.floor(cy-ry*1.35-1);j<=cy+ry*1.35+1;j++)for(let i=Math.floor(cx-rx*1.35-1);i<=cx+rx*1.35+1;i++){
+  const dx=(i+.5-cx)/rx,dy=(j+.5-cy)/ry;let d=Math.hypot(dx,dy);if(wb)d/=1+wb*Math.sin(Math.atan2(dy,dx)*wf+wp);
+  if(d>1)continue;const lit=-(dx*.55+dy*.85);let c=P.m;
+  if(d>.8&&lit<.15)c=P.d;else if(lit>.5&&d<.62)c=P.h||P.l;else if(lit>.2)c=P.l;
+  else if(lit>.04&&(i+j)%2===0)c=P.l;else if(d>.62&&lit<0&&(i+j)%2===0)c=P.d;
+  x.fillStyle=c;x.fillRect(i,j,1,1)}}
+function eyes(x,cx,cy,sep,lx,blink,angry,s=2){
+ for(const sx of[-1,1]){const ex=Math.round(cx+sx*sep-s/2),ey=Math.round(cy-s/2);
+  if(blink){pxl(x,INK,ex,ey+(s>>1),s,1);continue}
+  pxl(x,'#fff',ex,ey,s,s);const pw=s>2?2:1;pxl(x,INK,ex+(lx>0?s-pw:lx<0?0:(s-pw)>>1),ey+s-pw,pw,pw);
+  if(angry){if(sx<0){pxl(x,INK,ex-1,ey-2);pxl(x,INK,ex,ey-2);pxl(x,INK,ex+s-1,ey-1)}else{pxl(x,INK,ex+s-1,ey-2);pxl(x,INK,ex+s,ey-2);pxl(x,INK,ex,ey-1)}}}}
+function ribbonMark(x,i,j){pxl(x,'#ffc2e0',i+1,j);pxl(x,'#ff3b7a',i,j+1);pxl(x,'#ff3b7a',i+2,j+1);pxl(x,'#ff3b7a',i+1,j+2);pxl(x,'#a0205f',i,j+3);pxl(x,'#a0205f',i+2,j+3)}
+
+/* ---------- heroes ---------- */
+const HDEF={
+ tcell:{m:'#5ab0ff',l:'#a8d8ff',d:'#2a64b0',h:'#e4f4ff',rx:6.5,ry:6,f:'rec'},
+ nk:{m:'#ffa24a',l:'#ffd09a',d:'#b0601a',h:'#fff0d8',rx:6.1,ry:5.8,f:'gran'},
+ macro:{m:'#b07aff',l:'#d8baff',d:'#6a3aa8',h:'#f2e8ff',rx:7.4,ry:6.6,f:'pod'},
+ bcell:{m:'#5ee09a',l:'#b0f5d0',d:'#239a5c',h:'#eafff4',rx:6.3,ry:6,f:'ab'},
+ dend:{m:'#ffd86a',l:'#fff0b0',d:'#b8901f',h:'#fffbe8',rx:5.6,ry:5.6,f:'den'},
+ neutro:{m:'#e6dcff',l:'#ffffff',d:'#9a8ad0',h:'#ffffff',rx:6.3,ry:6,f:'lobe'},
+ helper:{m:'#4ad6e8',l:'#a8f2fa',d:'#1f8ea0',h:'#effdff',rx:6.3,ry:6,f:'cap'},
+ admin:{m:'#c9b8ff',l:'#efe8ff',d:'#6a4ad0',h:'#ffffff',rx:7,ry:6.4,f:'crown'}};
+function heroFrame(id,fr,blink){const D=HDEF[id],N=26,c=mk(N,N),x=c.getContext('2d'),cx=13,bob=[0,-1,0,-1][fr],cy=14+bob;
+ const rx=D.rx+(fr%2?-.25:.15),ry=D.ry+(fr%2?.3:-.1),fo=[[-1,1],[0,0],[1,-1],[0,0]][fr],by=Math.round(cy+ry-1.5);
+ pxl(x,D.d,cx-4+fo[0],by,3,2);pxl(x,D.d,cx+1+fo[1],by,3,2);pxl(x,D.m,cx-4+fo[0],by,3,1);pxl(x,D.m,cx+1+fo[1],by,3,1);
+ if(D.f==='rec')for(const a of[-2.35,-1.57,-.8]){for(let t=0;t<=rx+2.5;t+=.5)pxl(x,D.d,cx+Math.cos(a)*t,cy+Math.sin(a)*t*ry/rx);
+  const ex=cx+Math.cos(a)*(rx+2.5),ey=cy+Math.sin(a)*(ry+2.5),qx=-Math.sin(a),qy=Math.cos(a);
+  pxl(x,D.l,ex+qx+Math.cos(a),ey+qy+Math.sin(a));pxl(x,D.l,ex-qx+Math.cos(a),ey-qy+Math.sin(a))}
+ if(D.f==='den')for(const[i,a]of[-2.5,-1.4,-.4,.6,2.7].entries()){const w=Math.sin(fr*1.57+i)*.18,aa=a+w,L=rx+4;
+  for(let t=0;t<=L;t+=.5)pxl(x,D.d,cx+Math.cos(aa)*t,cy+Math.sin(aa)*t);
+  const ex=cx+Math.cos(aa)*L,ey=cy+Math.sin(aa)*L;for(const s of[-.7,.7]){pxl(x,D.m,ex+Math.cos(aa+s)*1.5,ey+Math.sin(aa+s)*1.5);pxl(x,D.l,ex+Math.cos(aa+s)*2.5,ey+Math.sin(aa+s)*2.5)}}
+ if(D.f==='pod'){const e=[0,1,2,1][fr];blob(x,cx-rx-1+(-e*.5),cy+2,2.6,2,D);blob(x,cx+rx+.5+e*.5,cy-1,2.4,2.2,D)}
+ if(D.f==='gran'){pxl(x,D.d,cx-2,cy-ry-1);pxl(x,D.d,cx,cy-ry-2);pxl(x,D.d,cx+2,cy-ry-1);pxl(x,D.d,cx,cy-ry-1)}
+ blob(x,cx,cy,rx,ry,D,{wob:D.f==='pod'?.11:.035,wf:D.f==='pod'?5:7,wp:fr*.9});
+ if(D.f==='gran'){for(const[i,j]of[[-3,-3],[-4,1],[0,4],[4,-4],[5,2]])pxl(x,D.d,cx+i,cy+j);pxl(x,D.l,cx,cy-ry)}
+ if(D.f==='pod'){for(const[i,j]of[[-4,-3],[4,3],[-1,4]]){pxl(x,'#7a4ab8',cx+i,cy+j,2,1);pxl(x,'#ff8ab8',cx+i,cy+j+1)}}
+ if(D.f==='ab'){const Y='#ffd166',Yd='#b8901f',ty=Math.round(cy-ry);pxl(x,Yd,cx-3,ty-1);pxl(x,Yd,cx-3,ty-2);pxl(x,Y,cx-4,ty-3);pxl(x,Y,cx-5,ty-4);pxl(x,Y,cx-2,ty-3);pxl(x,Y,cx-1,ty-4)}
+ if(D.f==='lobe'){for(const[i,j]of[[-2,3],[1,4],[3,3]])pxl(x,'#8a6ad0',cx+i,cy+j,2,2);pxl(x,'#b8a4f0',cx-2,cy+3)}
+ if(D.f==='cap'){const ty=Math.round(cy-ry);pxl(x,'#ff5fa8',cx-4,ty,9,2);pxl(x,'#ff9cc9',cx-3,ty-1,7,1);pxl(x,'#b8306f',cx+3,ty+2,4,1);pxl(x,'#ffd166',cx,ty);pxl(x,'#ffd166',cx-1,ty+1,3,1)}
+ if(D.f==='crown'){const ty=Math.round(cy-ry),G1='#ffd166',G2='#b8901f';pxl(x,G2,cx-4,ty,9,2);pxl(x,G1,cx-4,ty-1,9,1);for(const i of[-4,0,4]){pxl(x,G1,cx+i,ty-3,1,2);pxl(x,'#fff6c8',cx+i,ty-4)}pxl(x,G1,cx-2,ty-2);pxl(x,G1,cx+2,ty-2);pxl(x,'#ff5fa8',cx,ty);
+  const ccx=cx+4,ccy=cy+3;ring(x,ccx,ccy,2.2,'#6a4ad0');pxl(x,'#ffffff',ccx,ccy-2,1,2);pxl(x,'#ffffff',ccx,ccy,2,1)}
+ eyes(x,cx+1,cy-1,2.5,1,blink,false);
+ pxl(x,'#ff8ab8',cx-3,cy+1);pxl(x,'#ff8ab8',cx+5,cy+1);
+ pxl(x,INK,cx+1,cy+2,2,1);if(fr%2===0)pxl(x,'#c0305a',cx+1,cy+3,2,1);
+ ribbonMark(x,cx-5,cy);
+ return outline(c)}
+const HF={};
+for(const id in HDEF){const f=[0,1,2,3].map(i=>heroFrame(id,i,false));HF[id]={f,b:heroFrame(id,0,true),w:f.map(c=>sil(c,'#ffffff')),t:f.map(c=>sil(c,'#6ef0d2'))}}
+
+/* ---------- enemies ---------- */
+const EDEF={
+ drift:{P:{m:'#c0397a',l:'#ff7ab8',d:'#6a1446',h:'#ffc0dc'},N:20},
+ swarm:{P:{m:'#ff8d3a',l:'#ffc48a',d:'#8a3a08',h:'#ffe6c8'},N:16},
+ tank:{P:{m:'#8a3fb0',l:'#c490e0',d:'#3c1458',h:'#e8d0f5'},N:30},
+ shoot:{P:{m:'#6a58f0',l:'#a89cff',d:'#2a1a80',h:'#dcd6ff'},N:22},
+ charge:{P:{m:'#ff3f4f',l:'#ff9a9a',d:'#7a0a1a',h:'#ffd6d6'},N:24},
+ split:{P:{m:'#2fb8bc',l:'#8aeeee',d:'#0a5060',h:'#d8ffff'},N:22},
+ cloak:{P:{m:'#7a6a9a',l:'#b0a4cc',d:'#3a2e58',h:'#e0dcf0'},N:22},
+ boss:{P:{m:'#d0245a',l:'#ff7a9a',d:'#4a0a24',h:'#ffc8d6'},N:46},
+ ctc:{P:{m:'#a03ad8',l:'#d49aff',d:'#4a1270',h:'#f0dcff'},N:20},
+ clot:{P:{m:'#ff6a4a',l:'#ffb09a',d:'#8a2010',h:'#ffe0d6'},N:24},
+ dormant:{P:{m:'#5a6ab0',l:'#9aa8e8',d:'#26306a',h:'#dce2ff'},N:22},
+ lobboss:{P:{m:'#b0389a',l:'#e88ad8',d:'#4a0a44',h:'#ffd0f6'},N:50},
+ nodeboss:{P:{m:'#4a52c8',l:'#8a94f0',d:'#1a1e60',h:'#d8dcff'},N:48},
+ metboss:{P:{m:'#2a9a7a',l:'#7ee0c0',d:'#0a3a30',h:'#d0fff0'},N:50},
+ finalboss:{P:{m:'#5a1a6a',l:'#a050c0',d:'#200830',h:'#e8c0ff'},N:58}};
+function jaw(x,cx,cy,w){pxl(x,INK,cx-w/2,cy,w,2);for(let i=0;i<w;i+=2)pxl(x,'#fff',cx-w/2+i,cy)}
+function enemyFrame(k,f,sl){const D=EDEF[k],P=D.P,N=D.N,c=mk(N,N),x=c.getContext('2d'),o=N/2,q=[0,1,0,-1][f];
+ switch(k){
+ case'drift':blob(x,o,o+.5,6.2-q*.3,5.8+q*.3,P,{wob:.1,wf:5,wp:f*1.5});blob(x,o-2,o+2.5,2.2,1.7,{m:P.d,l:'#8a2060',d:'#4a0a30'});
+  eyes(x,o+.5,o-1.5,2.5,1,f===3,true);pxl(x,INK,o,o+2,3,1);break;
+ case'swarm':if(f===3){blob(x,o-2.6,o,3.2,3.4,P);blob(x,o+2.6,o,3.2,3.4,P);pxl(x,P.d,o,o-2,1,4)}
+  else blob(x,o,o,4.4+(f===1?.5:0),4.2-(f===1?.4:0),P);eyes(x,o+.5,o-.5,1.6,1,false,true,1);pxl(x,INK,o,o+2,2,1);break;
+ case'tank':{const pr=q*.35;for(const[i,j,r]of[[-5,-4,5],[5,-4,5.2],[-5,5,5],[5,5,4.8],[0,0,8.6]])blob(x,o+i,o+j,r+pr,r+pr,P,{wob:.06,wf:4,wp:i});
+  for(const[i,j]of[[-7,-6],[7,-2],[-6,7],[6,8]])pxl(x,P.d,o+i,o+j,2,1);eyes(x,o+1,o-2,3.5,1,f===3,true,3);jaw(x,o+1,o+3,8);break}
+ case'shoot':blob(x,o,o+2,6.6+q*.2,6.2-q*.2,P,{wob:.05,wf:6,wp:f});for(let j=o-9;j<o-3;j++)pxl(x,P.d,o,j);pxl(x,P.l,o-3,o-9,7,1);pxl(x,P.d,o-2,o-8,5,1);
+  pxl(x,f<2?'#ffd166':'#ff7ab8',o-1,o-11,3,2);pxl(x,'#fff',o-2,o,5,4);pxl(x,INK,o+1,o+1,2,2);pxl(x,INK,o-3,o-1,2,1);pxl(x,INK,o+3,o-1,2,1);pxl(x,INK,o-1,o+5,3,1);break;
+ case'charge':{const lx=q*.5;for(const i of[-3,0,3])pxl(x,P.d,o-1+i+lx,o-6.5,1,2);blob(x,o-1+lx,o+1,7.4,5.6,P,{wob:.04,wf:6,wp:f});
+  pxl(x,'#fff0c0',o+6+lx,o-1,2,3);pxl(x,'#fff0c0',o+8+lx,o,2,1);pxl(x,'#d8c890',o+6+lx,o+2,2,1);
+  eyes(x,o+.5+lx,o-1,2.5,1,false,true);jaw(x,o+1+lx,o+3,6);break}
+ case'split':blob(x,o,o,7.6+q*.25,7.4-q*.25,P,{wob:.05,wf:6,wp:f});
+  for(let i=0;i<3;i++){const a=f*.4+i*TAU/3;blob(x,o+Math.cos(a)*3,o+2.5+Math.sin(a)*2.2,1.9,1.9,{m:'#ff8d3a',l:'#ffc48a',d:'#8a3a08'})}
+  eyes(x,o+.5,o-3,2.5,1,f===2,true);break;
+ case'cloak':{blob(x,o,o+.5,6.6,6.2,P,{wob:.05,wf:7,wp:f});for(let i=0;i<6;i++){const a=i*TAU/6+f*.2,ex=o+Math.cos(a)*8,ey=o+.5+Math.sin(a)*7.6;pxl(x,P.d,o+Math.cos(a)*7,o+.5+Math.sin(a)*6.8);pxl(x,'#ffd166',ex,ey)}
+  pxl(x,'#2a2048',o-6,o-2,13,4);pxl(x,'#4a3e70',o-6,o-2,13,1);pxl(x,'#fff',o-3,o-1,3,1);pxl(x,'#fff',o+2,o-1,3,1);pxl(x,'#ff3f4f',o-1+(f%2),o-1);pxl(x,'#ff3f4f',o+4-(f%2),o-1);break}
+ case'boss':{const pr=q*.5;for(let i=0;i<7;i++){const a=i*TAU/7+.3;blob(x,o+Math.cos(a)*12,o+Math.sin(a)*11,6.5+pr+(i%2),6+pr,P,{wob:.08,wf:4,wp:i})}
+  blob(x,o,o,14+pr,13+pr,P,{wob:.05,wf:6,wp:f*.7});
+  for(const[a,b,l]of[[-8,-8,6],[6,-9,5],[-10,4,5],[9,6,6]])for(let t=0;t<l;t++)pxl(x,P.d,o+a+t*Math.sign(a)*.6,o+b+(t%2));
+  eyes(x,o+1,o-3,5,1,f===3,true,4);eyes(x,o-11,o+8,1.5,1,f===1,false,1);eyes(x,o+12,o-9,1.5,1,f===2,false,1);jaw(x,o+1,o+5,14);
+  pxl(x,'#ffd166',o-9,o-16,3,1);pxl(x,'#ffd166',o+7,o-16,3,1);break}
+ case'ctc':{const lx=q*.3;for(let i=0;i<5;i++)pxl(x,i%2?P.l:P.h,o-4-i*1.5+lx,o-.5+((i+f)%2),2,1);blob(x,o+2+lx,o,5.2,4.4+q*.2,P,{wob:.08,wf:5,wp:f});
+  eyes(x,o+3+lx,o-1,1.8,1,false,true,1);pxl(x,INK,o+3+lx,o+2,2,1);break}
+ case'clot':blob(x,o,o,7+q*.25,6.6-q*.25,P,{wob:.07,wf:5,wp:f});for(const[i,j]of[[-4,3],[2,4],[4,-3]])pxl(x,P.d,o+i,o+j,2,1);eyes(x,o+.5,o-1.5,2.5,1,f===3,true);jaw(x,o+.5,o+2.5,6);break;
+ case'dormant':{blob(x,o,o+1,6.8+q*.2,6-q*.2,P,{wob:.06,wf:3,wp:f});for(let i=0;i<6;i++){const a=-2.6+i*.42;pxl(x,P.d,o+Math.cos(a)*5,o+1+Math.sin(a)*4.4)}
+  if(sl){eyes(x,o+.5,o,2.5,1,true,false);pxl(x,P.d,o-1,o+3,3,1)}
+  else{eyes(x,o+.5,o-.5,2.5,1,false,true);pxl(x,INK,o-1,o+3,4,2);pxl(x,'#fff',o-1,o+3);pxl(x,'#fff',o+2,o+3);for(const[i,j]of[[-7,-4],[7,-4],[0,-8]])pxl(x,P.l,o+i,o+j,1,2)}break}
+ case'lobboss':{const pr=q*.45;for(let i=0;i<8;i++){const a=i*TAU/8+.2,rr=5.8+pr+(i%2)*.8,lx=o+Math.cos(a)*14,ly=o+Math.sin(a)*13;blob(x,lx,ly,rr,rr,P,{wob:.06,wf:4,wp:i});pxl(x,P.h,lx-1,ly-2,2,1);pxl(x,P.d,lx+1,ly+2)}
+  blob(x,o,o,11.5+pr,10.5+pr,P,{wob:.05,wf:6,wp:f*.6});eyes(x,o+1,o-3,4.5,1,f===3,true,4);jaw(x,o+1,o+4,12);for(const[i,j]of[[-6,7],[7,8]])pxl(x,'#ffd166',o+i,o+j,2,2);break}
+ case'nodeboss':{const pr=q*.4;blob(x,o,o+1,17+pr,13-pr*.5,P,{wob:.04,wf:3,wp:f*.5});
+  x.globalCompositeOperation='destination-out';disc(x,o,o+15,5.5,'#000');x.globalCompositeOperation='source-over';
+  for(const[i,j,r]of[[-12,6,2.6],[11,6,2.6],[-5,-9,3],[6,-9,3]]){disc(x,o+i,o+j,r,P.l);ring(x,o+i,o+j,r,P.d);pxl(x,P.h,o+i-1,o+j-1)}
+  pxl(x,'#1a1440',o-11,o-3,23,6);pxl(x,'#3a3478',o-11,o-3,23,1);pxl(x,'#fff',o-7,o-1,4,2);pxl(x,'#fff',o+3,o-1,4,2);pxl(x,'#ff3f4f',o-6+(f%2),o-1,2,2);pxl(x,'#ff3f4f',o+4+(f%2),o-1,2,2);jaw(x,o,o+5,10);break}
+ case'metboss':{const pr=q*.4;for(let i=0;i<5;i++){let px=o-8+i*4,py=o+10;for(let k=0;k<9;k++){px+=Math.sin(k*.9+i+f*.5)*.9;py+=1.3;pxl(x,P.d,px,py,2,1)}}
+  blob(x,o,o-1,13+pr,15-pr,P,{wob:.04,wf:2,wp:f*.4});for(const[i,j]of[[-8,6],[7,8],[-6,-9],[8,-7]])pxl(x,P.l,o+i,o+j,2,2);
+  for(const[i,j]of[[-4,-17],[0,-19],[4,-17]]){pxl(x,'#7ee06a',o+i,o+j,2,3);pxl(x,'#3a8a2a',o+i,o+j+3,2,1)}
+  eyes(x,o+1,o-2,4.5,1,f===3,true,4);jaw(x,o+1,o+5,10);break}
+ case'finalboss':{const pr=q*.5,cols=[EDEF.drift.P,EDEF.swarm.P,EDEF.split.P,EDEF.shoot.P,EDEF.charge.P,EDEF.tank.P];
+  for(let i=0;i<10;i++){const a=i*TAU/10+.15;for(let t=0;t<7;t++)pxl(x,i%2?P.d:'#ffd166',o+Math.cos(a)*(18+t),o+Math.sin(a)*(17+t),2,2)}
+  blob(x,o,o,19+pr,18+pr,P,{wob:.05,wf:7,wp:f*.5});
+  for(let i=0;i<6;i++){const a=i*TAU/6+.5;blob(x,o+Math.cos(a)*12,o+Math.sin(a)*11,5.2+pr*.5,4.8+pr*.5,cols[i],{wob:.1,wf:4,wp:i+f})}
+  disc(x,o,o-1,7.5,'#fff6e8');disc(x,o+1,o,4.2,'#ff3f4f');disc(x,o+1,o,2.2,INK);pxl(x,'#fff',o-1,o-3,2,2);if(f===3)pxl(x,P.d,o-7,o-3,15,4);jaw(x,o+1,o+11,14);break}}
+ return outline(c)}
+const ENF={};
+for(const k in EDEF){const f=[0,1,2,3].map(i=>enemyFrame(k,i));ENF[k]={f,w:f.map(c=>sil(c,'#ffffff')),g:f.map(c=>{const r=mk(c.width+2,c.height+2),x=r.getContext('2d');x.drawImage(outline(sil(c,'#ffd166'),'#ffd166'),0,0);x.drawImage(c,1,1);return r})}}
+ENF.dormant.s=[0,1,2,3].map(i=>enemyFrame('dormant',i,true));
+
+/* ---------- items + weapons ---------- */
+const GEMS=[['..a..','.abb.','abbbc','.bcc.','..c..'],['..a..','.abb.','abbbc','.bcc.','..c..'],['...a...','..abb..','.abbbb.','abbbbbc','.bbbcc.','..bcc..','...c...']]
+ .map((r,i)=>outline(rows(r,[{a:'#fff6c8',b:'#ffd166',c:'#c98a1a'},{a:'#e0fff8',b:'#6ef0d2',c:'#1f9a80'},{a:'#ffe0f0',b:'#ff5fa8',c:'#a0205f'}][i])));
+const HEART=outline(rows(['.ab.bb.','abbbbbb','bbbbbbb','bbbbbbc','.bbbbc.','..bbc..','...c...'],{a:'#ffd0e0',b:'#ff3b7a',c:'#a01040'}));
+const MINIH=outline(rows(['ab.bb','bbbbb','.bbc.','..c..'],{a:'#ffd0e0',b:'#ff3b7a',c:'#a01040'}));
+const RIBBON=outline(rows(['..abb..','.ab.bb.','.b...b.','.bb.bc.','..bbc..','..cbb..','.bc.bb.','bc...bc','c.....c'],{a:'#ffe0f0',b:'#ff5fa8',c:'#a0205f'}));
+const MAGNET=outline(rows(['aa...aa','bb...bb','bb...bb','bb...bb','bbb.bbb','.bbbbb.','..bbb..'],{a:'#e8e8ff',b:'#ff3f4f'}));
+const LEAF=outline(rows(['p.aaaa.','aaaaaaa','abbbbaa','aaaaaaa','abbbbba','aaaaaaa','abbbaaa','aaaaaaa'],{a:'#fff6e8',b:'#8a7ab0',p:'#ff3b7a'}));
+const CHEST=outline(rows(['.aaaaaaaa.','abbbbbbbba','abbbccbbba','dddddddddd','deeeffeeed','deeeffeeed','deeeeeeeed','.dddddddd.'],{a:'#ffe0a0',b:'#ffd166',c:'#ff5fa8',d:'#8a5a1a',e:'#c98a2a',f:'#ff3b7a'}));
+const AB=outline(rows(['a...a','.a.a.','..b..','..b..','..b..'],{a:'#ffd166',b:'#fff6c8'}));
+
+/* ---------- upgrade icons ---------- */
+const IP={a:'#ffffff',g:'#ffd166',p:'#ff5fa8',d:'#a0205f',t:'#6ef0d2',b:'#5ab0ff',r:'#ff3f4f',l:'#b07aff',k:'#4a3a7a',s:'#cdb4d8',o:'#ffa24a'};
+const ICR={
+ rate:['g...g...','gg..gg..','.gg..gg.','..gg..gg','.gg..gg.','gg..gg..','g...g...'],
+ multi:['..bb....','.bbbb...','.bbbb.bb','..bb.bbbb','bb...bbbb','bbbb..bb','bbbb....','.bb.....'],
+ dmg:['..aaa...','...a....','...a....','..aaa...','.apppa..','apppppa.','appgppa.','.aaaaa..'],
+ pierce:['.tttttt.','t......t','t.tttt.t','t.t..t.t','t.t..t.t','t.tttt.t','t......t','.tttttt.'],
+ crit:['........','..aaaa..','.a.tt.a.','a.tkkt.a','a.tkkt.a','.a.tt.a.','..aaaa..'],
+ arc:['....gg..','...gg...','..gg....','.ggggg..','...gg...','..gg....','.gg.....','gg......'],
+ blades:['.pp.pp.','ppppppp','ppppppp','.ppppp.','..ppp..','...p...'],
+ mag:['rr...rr','rr...rr','rr...rr','rrr.rrr','.rrrrr.','..rrr..'],
+ spd:['.....aa.','...aaaa.','.aaaaaa.','aappppa.','apppppp.','kkkkkkk.'],
+ hp:['..tt..','..tt..','tttttt','tttttt','..tt..','..tt..'],
+ nova:['..pppp..','.p....p.','p..pp..p','p.p..p.p','p.p..p.p','p..pp..p','.p....p.','..pppp..'],
+ dash:['aaaaa...','........','..aaaaaa','........','aaaaaa..','........','...aaaa.'],
+ boom:['..pp...','.p.pp..','.p..p..','.pp.p..','..pp...','..pp...','.p..p..','p....p.'],
+ home:['g...g','.g.g.','..a..','..a..','..a..'],
+ shield:['llllllll','lbbbbbbl','lbbaabbl','lbbaabbl','.lbbbbl.','..lbbl..','...ll...'],
+ surg:['......aa','.....aaa','....aaa.','...aaa..','..kkk...','.kkk....','kkk.....','kk......'],
+ regen:['....t...','...t....','.rr.rr..','rrrrrrr.','rrrarrr.','rrrrrrr.','.rrrrr..','..r.r...'],
+ rev:['...g...','.g.g.g.','..ggg..','ggggggg','..ggg..','.g.g.g.','...g...'],
+ heal:['..pp..','..pp..','pppppp','pppppp','..pp..','..pp..'],
+ bonus:['..a..','.agg.','agggo','.goo.','..o..'],
+ focus:['..aaa...','...a....','..aaa...','.attta..','attttta.','.aaaaa..']};
+const ICO={};
+function icon(k){if(ICO[k])return ICO[k];const s=outline(rows(ICR[k]||ICR.bonus,IP)),c=mk(40,40),x=c.getContext('2d');x.imageSmoothingEnabled=false;
+ const z=Math.floor(36/Math.max(s.width,s.height));x.drawImage(s,(40-s.width*z)/2|0,(40-s.height*z)/2|0,s.width*z,s.height*z);
+ ICO[k]={c:s,u:c.toDataURL()};return ICO[k]}
+
+/* ---------- tissue backgrounds ---------- */
+const STG=[
+ {n:'Milk ducts',type:'duct',boss:'boss',bossAt:55,rate:1,spd:1,R:[['drift',6],['swarm',2,12],['shoot',2,22]],P:{b:'#e58db1',n1:'#ee9dbe',n2:'#d97fa5',rim:'#c76893',nuc:'#ad4f7d',o:'#b0437a',i:'#fbd0e2',lu:'#8c2c5e',fat:'#f2acc8',fr:'#fcd6e6'},
+  note:'Milk ducts are thin tubes that carry milk to the nipple. Most breast cancers begin in the cells that line the ducts.'},
+ {n:'Lobules',type:'lob',boss:'lobboss',bossAt:60,rate:1,spd:1.15,R:[['drift',3],['swarm',2],['tank',2,6],['split',2,15],['charge',1,30]],P:{b:'#ec859f',n1:'#f396ad',n2:'#df7391',rim:'#cc5d80',nuc:'#b1466a',o:'#a8385f',i:'#ffd0db',lu:'#83244a',fat:'#f7a6ba',fr:'#ffd6e0'},
+  note:'Lobules are small glands that make milk. Cancer that starts here is called lobular breast cancer. Rogue cells move faster here.'},
+ {n:'Lymph nodes',type:'lym',boss:'nodeboss',bossAt:65,rate:1.35,spd:1,R:[['drift',2],['swarm',2],['shoot',2],['charge',2],['cloak',3,5]],P:{b:'#d98ccb',n1:'#e39bd5',n2:'#cb7cbe',rim:'#b766ab',nuc:'#9c5196',o:'#9a4794',i:'#f1c2ea',lu:'#b05aa6',fat:'#e9aedf',fr:'#f8d8f2'},
+  note:'Lymph nodes are bean-shaped filters packed with immune cells. Doctors check the ones under the arm to see whether cancer has spread. Expect more cells here.'},
+ {n:'Bloodstream',type:'blood',boss:'metboss',bossAt:70,rate:1.15,spd:1.05,R:[['ctc',4],['clot',3,5],['split',1],['swarm',1]],P:{b:'#e9798f',n1:'#f08ba0',n2:'#dc6a82',rim:'#cc5670',nuc:'#b8445f',o:'#d24a66',i:'#ffc4d0',lu:'#8a1f3c',fat:'#f3a0b2',fr:'#ffd2dc'},
+  note:'Cancer cells that get into the blood can travel all through the body. Most do not survive the trip, but a few can settle somewhere new. Traveling cells rush past in streams here.'},
+ {n:'Bone',type:'bone',boss:'finalboss',bossAt:75,rate:1.25,spd:1.05,elite:.14,R:[['dormant',4],['clot',2],['tank',2],['cloak',2],['charge',1],['shoot',1]],P:{b:'#eeaabd',n1:'#f4b9ca',n2:'#e39ab0',rim:'#d4879f',nuc:'#bf6f8b',o:'#fff1e8',i:'#ffe2d6',lu:'#d98ea4',fat:'#f6c3d1',fr:'#ffe3ec'},
+  note:'The bones are the most common place breast cancer spreads to. This is the final stage. Sleeping cells hide here, and resistant cells are common.'}];
+const CH=128,CS=4,CW=CH*CS,NV=6,CHK=[[],[],[],[],[]];
+function srand(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function chunk(si,v){if(CHK[si][v])return CHK[si][v];const P=STG[si].P,c=mk(CH,CH),x=c.getContext('2d'),R=srand(si*977+v*131+7),r=(a,b)=>a+R()*(b-a);
+ x.fillStyle=P.b;x.fillRect(0,0,CH,CH);
+ for(let k=0;k<CH*CH*.08;k++){x.fillStyle=R()<.5?P.n1:P.n2;x.fillRect(R()*CH|0,R()*CH|0,1,1)}
+ for(let k=0;k<6;k++){const cx=r(8,CH-8),cy=r(8,CH-8),rr=r(6,11);disc(x,cx,cy,rr,P.fat);ring(x,cx,cy,rr,P.fr);pxl(x,P.fr,cx-rr*.45,cy-rr*.45,2,2);pxl(x,'#ffffff',cx-rr*.45,cy-rr*.45)}
+ for(let k=0;k<24;k++){const cx=r(5,CH-5),cy=r(5,CH-5),rr=r(3,6);ring(x,cx,cy,rr,P.rim);pxl(x,P.nuc,cx+r(-1,1),cy+r(-1,1),2,2)}
+ const path=(sx,sy,a,n)=>{const pts=[];let px=sx,py=sy;for(let i=0;i<n;i++){a+=r(-.28,.28);px+=Math.cos(a)*1.5;py+=Math.sin(a)*1.5;if(px<12||px>CH-12||py<12||py>CH-12)break;pts.push([px,py,a])}return pts};
+ const tube=(pts,w)=>{for(const[a,b]of pts)disc(x,a,b,w,P.o);for(const[a,b]of pts)disc(x,a-.5,b-.5,w-1.4,P.i);for(const[a,b]of pts)disc(x,a,b,Math.max(.6,w-2.8),P.lu)};
+ const T=STG[si].type;
+ if(T==='duct'){for(let k=0;k<2;k++){const pts=path(r(20,CH-20),r(20,CH-20),r(0,TAU),r(40,70));tube(pts,4);
+  if(pts.length>20){const q=pts[pts.length*.5|0];tube(path(q[0],q[1],q[2]+r(.6,1.2)*(R()<.5?1:-1),r(18,30)),3)}}}
+ if(T==='lob'){for(let k=0;k<3;k++){const cx=r(22,CH-22),cy=r(22,CH-22);tube(path(cx,cy,r(0,TAU),r(10,20)),2.6);const n=7+(R()*4|0);
+  for(let i=0;i<n;i++){const a=i*TAU/n+r(-.2,.2),d=r(5,8);disc(x,cx+Math.cos(a)*d,cy+Math.sin(a)*d,3.4,P.o);disc(x,cx+Math.cos(a)*d-.6,cy+Math.sin(a)*d-.6,2.2,P.i);pxl(x,P.lu,cx+Math.cos(a)*d,cy+Math.sin(a)*d)}}}
+ if(T==='lym'){for(let k=0;k<3;k++){const pts=path(r(14,CH-14),r(14,CH-14),r(0,TAU),r(30,60));for(const[a,b]of pts)pxl(x,P.o,a,b,2,1);for(const[a,b]of pts)pxl(x,P.i,a,b)}
+  const cx=r(30,CH-30),cy=r(30,CH-30);blob(x,cx,cy,r(14,19),r(10,13),{m:P.o,l:P.i,d:P.rim},{wob:.05,wf:3,wp:r(0,6)});disc(x,cx+r(12,16),cy,4,P.b);
+  for(let i=0;i<6;i++){const a=i*TAU/6+r(0,.5);disc(x,cx+Math.cos(a)*9,cy+Math.sin(a)*6,2.2,P.lu)}}
+ if(T==='blood'){for(let k=0;k<6;k++){let px=r(0,CH),py=r(0,CH);const a=r(-.25,.25),n=r(10,24);for(let i=0;i<n;i++){pxl(x,P.i,px,py,2,1);px+=Math.cos(a)*3;py+=Math.sin(a)*3}}
+  for(let k=0;k<16;k++){const cx=r(6,CH-6),cy=r(6,CH-6),rr=r(3.6,4.6);disc(x,cx,cy,rr,P.o);disc(x,cx,cy,rr-1.2,'#c23a58');disc(x,cx+.4,cy+.4,rr-2.4,'#a82a48');pxl(x,'#ff9db0',cx-rr*.6,cy-rr*.5,2,1)}
+  for(let k=0;k<3;k++){const cx=r(10,CH-10),cy=r(10,CH-10);disc(x,cx,cy,5.5,'#f8f0ff');ring(x,cx,cy,5.5,'#c8b8e8');pxl(x,'#b090d8',cx-1,cy-1,3,2)}}
+ if(T==='bone'){for(let k=0;k<6;k++){const pts=path(r(14,CH-14),r(14,CH-14),r(0,TAU),r(14,34));for(const[a,b]of pts)disc(x,a,b,3.6,P.lu);for(const[a,b]of pts)disc(x,a,b,2.6,P.o);for(const[a,b]of pts)pxl(x,'#ffffff',a-1,b-1)}
+  for(let k=0;k<6;k++){const cx=r(8,CH-8),cy=r(8,CH-8);disc(x,cx,cy,1.6,'#c0507a');pxl(x,'#ff8ab0',cx,cy)}}
+ return CHK[si][v]=c}
+const hash2=(i,j)=>{let h=Math.imul(i,374761393)+Math.imul(j,668265263)|0;h=Math.imul(h^h>>>13,1274126177);return(h^h>>>16)>>>0};
+
+/* =================== CONTENT =================== */
+const HEROES=[
+ {id:'tcell',n:'Killer T-cell',role:'All-rounder',cost:0,perk:'Shots pierce 1 extra cell.',
+  bio:'Killer T-cells patrol the body and destroy cells that look abnormal, including some cancer cells. Other immune cells teach them what to attack.',
+  apply:(p,s)=>{s.pierce+=1}},
+ {id:'nk',n:'NK cell',role:'Speed hunter',cost:40,perk:'25% faster. Quicker dash that damages cells. 20% less health.',
+  bio:'Natural killer (NK) cells are fast first-line defenders. They can attack abnormal cells without needing to be trained first.',
+  apply:(p,s)=>{p.spd*=1.25;p.dcd*=.75;s.dashDmg=1;p.mhp*=.8}},
+ {id:'macro',n:'Macrophage',role:'Tank',cost:40,perk:'40% more health, an orbiting heart, and heals a little with every cell it clears. Slower.',
+  bio:'Macrophages are big immune cells that swallow germs, debris and dying cells. Their name means “big eater”.',
+  apply:(p,s)=>{p.mhp*=1.4;p.spd*=.9;s.blades=1;s.eat=1}},
+ {id:'bcell',n:'B-cell',role:'Antibody maker',cost:60,perk:'Starts with homing antibodies and 10% extra critical chance. 10% less health.',
+  bio:'B-cells make antibodies: Y-shaped proteins that lock onto one target and flag it for attack. Some breast cancer medicines are lab-made antibodies, such as those that target HER2.',
+  apply:(p,s)=>{s.home=1;s.crit+=.1;p.mhp*=.9}},
+ {id:'dend',n:'Dendritic cell',role:'Messenger',cost:80,perk:'35% more XP, longer gem pull and 4 upgrade choices. 10% less damage.',
+  bio:'Dendritic cells collect pieces of abnormal cells and show them to T-cells, teaching the immune system what to attack. Researchers are testing cancer vaccines built on them.',
+  apply:(p,s)=>{s.xpm=1.35;s.mag+=60;s.choices=4;s.dmg*=.9}},
+ {id:'neutro',n:'Neutrophil',role:'First responder',cost:80,perk:'Starts with Awareness wave and 15% faster shots. 15% less health.',
+  bio:'Neutrophils are the most common white blood cells and often the first to arrive. Chemotherapy can lower their numbers, which is why doctors check blood counts during treatment.',
+  apply:(p,s)=>{s.nova=1;s.rate*=1.15;p.mhp*=.85}},
+ {id:'helper',n:'Helper T-cell',role:'Coordinator',cost:120,perk:'Starts with Immunotherapy lightning and 2 extra second opinions.',
+  bio:'Helper T-cells send chemical signals called cytokines that switch on and guide other immune cells, like a team captain.',
+  apply:(p,s,g)=>{s.arc=1;g.rerolls+=2}},
+ {id:'admin',secret:1,n:'Chrono Guardian',role:'Admin hero',cost:0,perk:'Triple health and damage, every weapon from the start, and Time stop: freeze every rogue cell for 5 seconds (T key or the Time button).',
+  bio:'A secret hero unlocked with the admin password. Not a real immune cell, just extremely strong.',
+  apply:(p,s,g)=>{p.mhp*=3;p.spd*=1.2;p.dcd*=.6;s.dmg*=3;s.rate*=2;s.multi+=2;s.pierce+=3;s.crit+=.3;s.blades=3;s.nova=3;s.arc=3;s.home=3;s.boom=2;s.regen+=3;s.mag+=80;s.choices=4;s.dashDmg=1;s.tstop=1;g.rerolls+=5}}];
+
+const ET={
+ drift:{r:16,hp:22,sp:78,dmg:10,sc:10,xp:1},
+ swarm:{r:11,hp:7,sp:145,dmg:6,sc:5,xp:1},
+ tank:{r:32,hp:120,sp:46,dmg:20,sc:40,xp:4},
+ shoot:{r:17,hp:30,sp:66,dmg:8,sc:25,xp:2},
+ charge:{r:17,hp:40,sp:56,dmg:16,sc:30,xp:2},
+ split:{r:19,hp:50,sp:60,dmg:12,sc:30,xp:2},
+ cloak:{r:17,hp:45,sp:84,dmg:12,sc:35,xp:3},
+ boss:{r:56,hp:1000,sp:40,dmg:30,sc:1000,xp:30,boss:1},
+ ctc:{r:13,hp:14,sp:175,dmg:9,sc:8,xp:1},
+ clot:{r:20,hp:60,sp:58,dmg:14,sc:45,xp:4},
+ dormant:{r:17,hp:40,sp:72,dmg:14,sc:35,xp:3},
+ lobboss:{r:56,hp:1050,sp:44,dmg:28,sc:1500,xp:34,boss:1},
+ nodeboss:{r:50,hp:1050,sp:60,dmg:30,sc:2000,xp:38,boss:1},
+ metboss:{r:56,hp:1150,sp:46,dmg:32,sc:2500,xp:42,boss:1},
+ finalboss:{r:66,hp:1350,sp:44,dmg:36,sc:5000,xp:60,boss:1}};
+
+const CELLS=['drift','swarm','tank','shoot','charge','split','cloak','ctc','clot','dormant','elite','boss','lobboss','nodeboss','metboss','finalboss'];
+const INFO={
+ drift:{n:'Rogue cell',sub:'Mutated cell',
+  real:'Cancer begins when changes (mutations) in a cell’s DNA make it ignore the body’s “stop growing” signals. Over time, one altered cell can multiply into many.',
+  game:'Drifts slowly toward you. The most common rogue cell.',
+  fight:'Screening, such as mammograms, aims to find changes early, while there are still few abnormal cells.',
+  tip:'An easy target. Keep moving and let your shots do the work.'},
+ swarm:{n:'Fast divider',sub:'Rapid cell division',
+  real:'Cancer cells divide again and again without the normal limits. The faster they divide, the faster a tumor can grow.',
+  game:'Small and quick. Arrives in groups.',
+  fight:'Chemotherapy works partly by damaging cells that divide quickly. It can also affect healthy fast-dividing cells, such as hair cells, which is one reason side effects happen.',
+  tip:'Area attacks like Awareness wave and Immunotherapy clear groups fast.'},
+ tank:{n:'Tumor mass',sub:'Tumor',
+  real:'A tumor is a clump of abnormal cells. Most breast lumps are not cancer, but any new lump or change should be checked by a doctor.',
+  game:'Big, slow and tough. Takes many hits to break up.',
+  fight:'Surgery can remove a tumor. Radiation or medicines can shrink it before or after surgery.',
+  tip:'Mammogram (pierce) and Research funding (damage) work well.'},
+ shoot:{n:'Signaling cell',sub:'Growth signals and angiogenesis',
+  real:'Tumors send out chemical signals that grow new blood vessels to feed them. This is called angiogenesis.',
+  game:'Keeps its distance and fires signal shots at you.',
+  fight:'Some targeted medicines block the growth signals that cancer cells depend on.',
+  tip:'Dash toward it, or let Targeted therapy hunt it down.'},
+ charge:{n:'Invasive cell',sub:'Invasive cancer',
+  real:'In invasive breast cancer, cells break out of the milk ducts or lobules where they started and grow into nearby tissue. Cells that stay inside are called “in situ”.',
+  game:'Winds up, then charges in a straight line. Watch for the red warning line.',
+  fight:'Finding cancer before it becomes invasive can give people more treatment options.',
+  tip:'Dash sideways when the red line appears. You are briefly safe while dashing.'},
+ split:{n:'Breakaway cell',sub:'Metastasis',
+  real:'Some cancer cells can break off, travel through lymph vessels or the bloodstream, and start new tumors elsewhere. This is called metastasis.',
+  game:'When cleared, it bursts into three fast cells.',
+  fight:'Treatments that travel through the whole body, such as hormone therapy, chemotherapy and targeted drugs, can reach cells that surgery cannot.',
+  tip:'Awareness wave and Radiation therapy clean up the pieces.'},
+ cloak:{n:'Hiding cell',sub:'Immune evasion',
+  real:'Some cancer cells raise “don’t attack me” signals, such as a protein called PD-L1, that switch T-cells off. This lets them hide from the immune system.',
+  game:'Fades out of sight now and then. While hidden, normal shots pass straight through it.',
+  fight:'Checkpoint inhibitors, a kind of immunotherapy, block these signals so T-cells can attack again. They are used for some triple-negative breast cancers.',
+  tip:'Immunotherapy lightning and Awareness waves still hit it, and they pull off its disguise.'},
+ boss:{n:'Aggressive tumor',sub:'High-grade tumor',
+  real:'Doctors grade a tumor by how abnormal its cells look. A high-grade tumor tends to grow faster. Breast cancers also come in types, such as hormone receptor-positive, HER2-positive and triple-negative, and each responds to different treatments.',
+  game:'A huge boss. It fires rings of shots, calls in swarms and gets angrier at half health.',
+  fight:'Treatment plans are matched to the type of cancer, which is one reason research matters so much.',
+  tip:'Circle it, keep moving and dash through its rings.'},
+ elite:{n:'Resistant cell',sub:'Treatment resistance',
+  real:'Sometimes a few cancer cells survive treatment and keep growing. This is called treatment resistance, and it is a major reason new medicines are always being studied.',
+  game:'Glows gold and has 4 times the health. Drops extra gems and a heart.',
+  fight:'Combination therapy uses more than one treatment at once, making it harder for cells to survive.',
+  tip:'Focus it first. The rewards are worth it.'},
+ ctc:{n:'Traveling cell',sub:'Circulating tumor cell',
+  real:'Cancer cells that break into a blood vessel are called circulating tumor cells. Most of them die in the bloodstream, but a few can settle somewhere new and grow.',
+  game:'Rushes past in streams, following the flow of the blood.',
+  fight:'Researchers are studying blood tests, sometimes called liquid biopsies, that look for tumor cells or tumor DNA in a blood sample.',
+  tip:'Step out of the stream, then pick them off from the side.'},
+ clot:{n:'Shielded cell',sub:'Platelet cloaking',
+  real:'In the blood, some tumor cells cover themselves with platelets, the tiny cell pieces that help blood clot. The coating can help shield them from immune cells.',
+  game:'A platelet shield soaks up most of the damage. Break the shield and it becomes easy.',
+  fight:'Scientists are studying how this shield works so they can find ways to strip it away and let immune cells attack.',
+  tip:'Lightning, Awareness waves and Surgery break shields much faster.'},
+ dormant:{n:'Sleeping cell',sub:'Dormant cancer cell',
+  real:'Some cancer cells can stay quiet, or dormant, for years before they start growing again. This is one reason breast cancer can come back long after treatment.',
+  game:'Sits still and harmless until you get close or hit it. Then it wakes up and rushes you.',
+  fight:'Follow-up visits after treatment, and medicines like hormone therapy taken for several years, help lower the chance of cancer coming back.',
+  tip:'Clear them from a distance before they wake up.'},
+ lobboss:{n:'Lobular mass',sub:'Invasive lobular breast cancer',
+  real:'Invasive lobular breast cancer starts in the lobules. Its cells often grow in thin lines instead of a firm lump, so it can be harder to feel and to see on a mammogram.',
+  game:'Stage 2 boss. Spins out spiral streams of shots and buds off breakaway cells.',
+  fight:'Doctors may use extra imaging, such as ultrasound or MRI, to see how far it has spread in the breast.',
+  tip:'Stay at medium range and circle the same way the spiral turns.'},
+ nodeboss:{n:'Node invader',sub:'Lymph node spread',
+  real:'When breast cancer spreads, the lymph nodes under the arm are often the first place it reaches. Whether the nodes contain cancer helps doctors work out the stage.',
+  game:'Stage 3 boss. Vanishes, reappears near you and charges. Fires a ring of shots after every charge.',
+  fight:'A sentinel lymph node biopsy removes the first node or few nodes the tumor drains to, so they can be checked for cancer.',
+  tip:'When it vanishes, keep moving. Dash sideways when the red line appears.'},
+ metboss:{n:'Seed tumor',sub:'Seed and soil',
+  real:'Doctors describe metastasis with the “seed and soil” idea: cancer cells, the seeds, can only grow in places, the soil, that suit them. Breast cancer most often spreads to the bones, liver, lungs and brain.',
+  game:'Stage 4 boss. Fires spinning crosses of shots and sends out streams of traveling cells.',
+  fight:'Cancer that has spread far is called metastatic, or stage 4, breast cancer. It is treated with medicines that travel through the whole body, and many people live with it for years.',
+  tip:'Circle slowly in the gaps between the arms of the cross.'},
+ finalboss:{n:'The last mutation',sub:'Cancer evolution',
+  real:'Cancer cells keep changing as they divide. A tumor can end up holding many slightly different cells, so a treatment that stops some of them may miss others.',
+  game:'The final boss. It changes its attack pattern at two-thirds and one-third health.',
+  fight:'Doctors often test cancer again if it comes back or spreads, because its type can change. Clinical trials keep finding better options.',
+  tip:'Watch its glow. Purple fires rings, orange spins spirals, red charges at you.'}};
+
+const UPS=[
+ {id:'rate',n:'Cytokine boost',d:'Shoot 20% faster',real:'Cytokines are chemical messages immune cells use to rally each other.',max:6,f:s=>s.rate*=1.2},
+ {id:'multi',n:'Clonal expansion',d:'+1 shot per volley',real:'When a T-cell finds its target, it copies itself into an army of clones.',max:4,f:s=>s.multi++},
+ {id:'dmg',n:'Research funding',d:'+30% damage',real:'Funding pays for the studies that turn into new treatments.',max:6,f:s=>s.dmg*=1.3},
+ {id:'pierce',n:'Mammogram',d:'Shots pass through +1 cell',real:'A mammogram is a low-dose X-ray that can find changes too small to feel.',max:3,f:s=>s.pierce++},
+ {id:'crit',n:'Breast awareness',d:'+10% critical hit chance',real:'Knowing how your breasts normally look and feel helps you notice changes early.',max:5,f:s=>s.crit+=.1},
+ {id:'arc',n:'Immunotherapy',d:'Lightning jumps between cells and reveals hidden ones',real:'Immunotherapy helps the immune system recognize cancer cells that were hiding.',max:5,f:s=>s.arc++},
+ {id:'blades',n:'Care team',d:'+1 orbiting heart',real:'Doctors, nurses, patient navigators and loved ones form a care team around each patient.',max:5,f:s=>s.blades++},
+ {id:'mag',n:'Community',d:'Pull gems from farther away',real:'Support groups connect people who understand what treatment is like.',max:4,f:s=>s.mag+=60},
+ {id:'spd',n:'Active lifestyle',d:'+10% move speed',real:'Regular physical activity is linked to a lower risk of breast cancer.',max:4,f:(s,p)=>p.spd*=1.1},
+ {id:'hp',n:'Healthy habits',d:'+25 max health and heal 40',real:'Staying active, limiting alcohol and keeping a healthy weight can help lower risk.',max:6,f:(s,p)=>{p.mhp+=25;p.hp=Math.min(p.mhp,p.hp+40)}},
+ {id:'nova',n:'Awareness wave',d:'A pink blast pushes cells away',real:'Awareness campaigns encourage people to get checked and to talk openly.',max:5,f:s=>s.nova++},
+ {id:'dash',n:'Resilience',d:'Dash recharges 25% faster',real:'Rest, counseling and support help people cope during treatment.',max:4,f:(s,p)=>p.dcd*=.75},
+ {id:'boom',n:'Radiation therapy',d:'A beam flies out and comes back',real:'Radiation therapy uses focused high-energy rays to destroy cancer cells in one area.',max:5,f:s=>s.boom++},
+ {id:'home',n:'Targeted therapy',d:'Homing antibodies seek out cells',real:'Targeted drugs attack specific features of cancer cells, such as the HER2 protein.',max:5,f:s=>s.home++},
+ {id:'shield',n:'Hormone therapy',d:'Slows and weakens nearby cells',real:'Many breast cancers use estrogen to grow. Hormone therapy blocks that fuel.',max:4,f:s=>s.shield++},
+ {id:'surg',n:'Surgery',d:'A sweeping cut every few seconds',real:'Surgery removes the tumor. A lumpectomy removes part of the breast; a mastectomy removes all of it.',max:5,f:s=>s.surg++},
+ {id:'regen',n:'Nutrition',d:'Regenerate 1 health per second',real:'Good nutrition helps the body heal during and after treatment.',max:4,f:s=>s.regen+=1},
+ {id:'rev',n:'Renewed hope',d:'Revive once with half health',real:'Millions of people around the world are living after a breast cancer diagnosis.',max:1,f:(s,p)=>p.rev++}];
+const FALL=[
+ {id:'heal',n:'Rest and recovery',d:'Heal 50 health',real:'Recovery time is part of treatment, not a break from it.',max:999,f:(s,p)=>{p.hp=Math.min(p.mhp,p.hp+50)}},
+ {id:'bonus',n:'Fundraiser',d:'+500 score',real:'Fundraising supports research, screening programs and patient care.',max:999,f:()=>{G.score+=500}},
+ {id:'focus',n:'Clinical trial',d:'+10% damage',real:'Clinical trials test new treatments. Today’s standard care came from past trials.',max:999,f:s=>s.dmg*=1.1}];
+const EVO=[
+ {id:'storm',n:'Immune storm',need:'Immunotherapy 2 + Care team 1',req:(s)=>s.arc>=2&&s.blades>=1,real:'Immunotherapy works best when the rest of the immune team is strong too.'},
+ {id:'combo',n:'Combination therapy',need:'Clonal expansion 3 + Mammogram 2',req:(s)=>s.multi>=3&&s.pierce>=2,fx:s=>{s.dmg*=1.35},real:'Doctors often combine treatments so cancer cells have fewer ways to survive.'},
+ {id:'aura',n:'Survivorship care',need:'Awareness wave 2 + Healthy habits 2',req:(s,u)=>s.nova>=2&&(u.hp||0)>=2,real:'Follow-up care after treatment helps people stay healthy for the long term.'},
+ {id:'prec',n:'Precision radiation',need:'Radiation therapy 2 + Mammogram 1',req:(s)=>s.boom>=2&&s.pierce>=1,real:'Modern radiation is shaped to hit the tumor while sparing healthy tissue.'},
+ {id:'abs',n:'Antibody storm',need:'Targeted therapy 2 + Clonal expansion 2',req:(s)=>s.home>=2&&s.multi>=2,real:'Some antibody drugs carry chemotherapy straight to the cancer cell, like a guided delivery.'},
+ {id:'neo',n:'Neoadjuvant therapy',need:'Hormone therapy 2 + Surgery 1',req:(s)=>s.shield>=2&&s.surg>=1,real:'Treatment given before surgery can shrink a tumor so it is easier to remove.'}];
+
+const PERKS=[['hp','Healthy start','+15 starting health',5],['dmg','Research grants','+8% damage',5],['mag','Community drive','Longer gem pull',5],['crit','Screening day','+4% critical chance',5],
+ ['rate','Early response','+6% fire rate',5],['spd','Active living','+4% move speed',5],['reroll','Second opinions','+1 reroll per run',3],['rev','Hope charm','Revive once per run (rank 2: twice)',2]];
+const perkCost=(k,lv)=>k==='rev'?[60,140][lv]:k==='reroll'?[20,40,70][lv]:(lv+1)*12;
+
+const SIGNS=['A new lump in the breast or underarm','Thickening or swelling of part of the breast','Dimpling or puckering of the skin','Redness, scaliness or flaky skin on the breast or nipple','A nipple turning inward, or pain in the nipple area','Nipple discharge other than breast milk, including blood','Any change in the size or shape of the breast','Pain in any area of the breast that does not go away'];
+const FACTS=[
+ 'Early detection saves lives. In the US, 5-year survival is about 99% when breast cancer is found before it spreads.',
+ 'Know your normal. Tell a doctor promptly about any breast change.',
+ 'Men can get breast cancer too. About 1 in 100 breast cancers in the US is found in a man.',
+ 'Most breast lumps are not cancer, but every new lump should be checked.',
+ 'Most people diagnosed with breast cancer have no family history of it.',
+ 'Being active and limiting alcohol are linked to a lower risk.',
+ 'Inherited changes in the BRCA1 and BRCA2 genes raise risk. Genetic counseling can help families understand it.',
+ 'Screening guidelines differ by country and by personal risk. Ask a doctor when you should start.',
+ 'Treatment depends on the type of breast cancer. Many people have a mix of surgery, radiation and medicines.',
+ 'You do not have to face it alone. Support groups and caring friends make a real difference.',
+ 'Survival has improved over the decades thanks to research, screening and better treatment.',
+ 'Practical help matters: meals, rides to appointments, or simply listening.',
+ 'There is no good evidence that antiperspirants, underwire bras or a bump to the breast cause breast cancer.',
+ 'Breast cancer is the most common cancer in women worldwide. In 2022, about 2.3 million women were diagnosed.'];
+const QUIZ=[
+ {q:'Can men get breast cancer?',a:['Yes','No'],c:0,e:'Yes. It is rare, about 1 in 100 breast cancers in the US, but men have breast tissue too.'},
+ {q:'Are most breast lumps cancer?',a:['Yes, most are','No, most are not'],c:1,e:'Most breast lumps are not cancer. Cysts and other harmless lumps are common, but any new lump should still be checked.'},
+ {q:'Which of these can be a sign of breast cancer?',a:['Dimpling or puckering of the skin','Feeling hungry','Cold hands'],c:0,e:'Signs include a new lump, skin dimpling, redness, nipple changes, discharge, or a change in size or shape.'},
+ {q:'Do most people diagnosed with breast cancer have a family history of it?',a:['Yes','No'],c:1,e:'Most people diagnosed have no close relative with breast cancer. That is why everyone should know their normal.'},
+ {q:'Do antiperspirants cause breast cancer?',a:['Yes','There is no good evidence of that'],c:1,e:'Research has not found a link between antiperspirants or deodorants and breast cancer.'},
+ {q:'What is a mammogram?',a:['A low-dose X-ray of the breast','A blood test','A type of surgery'],c:0,e:'A mammogram can find changes before they can be felt.'},
+ {q:'Which is one of the biggest risk factors for breast cancer?',a:['Getting older','Wearing a bra','Drinking coffee'],c:0,e:'Being female and getting older are among the biggest risk factors. Bras and coffee have not been shown to cause it.'},
+ {q:'What does metastasis mean?',a:['Cancer spreading to other parts of the body','A healthy cell dividing','A type of vitamin'],c:0,e:'Metastatic breast cancer has spread beyond the breast and nearby lymph nodes, for example to the bones or lungs.'},
+ {q:'What are BRCA1 and BRCA2?',a:['Genes that help repair DNA','Types of mammogram','Breast cancer medicines'],c:0,e:'Inherited changes in these genes raise the risk of breast and ovarian cancer. Genetic counseling can help.'},
+ {q:'Which habit is linked to a lower risk?',a:['Regular physical activity','Drinking more alcohol','Sitting all day'],c:0,e:'Being active is linked to lower risk. Alcohol is linked to higher risk.'},
+ {q:'Can young people get breast cancer?',a:['Yes, though it is less common','No, never'],c:0,e:'Most cases are in people over 50, but it can happen at younger ages. Changes should be checked at any age.'},
+ {q:'What does HER2-positive mean?',a:['The cancer cells make too much HER2 protein','The cancer is gone','The patient is over 50'],c:0,e:'HER2-positive cancers can often be treated with targeted drugs that block HER2.'},
+ {q:'Triple-negative breast cancer lacks which three things?',a:['Estrogen, progesterone and HER2 receptors','Three types of blood cell','Three lymph nodes'],c:0,e:'Without these receptors, hormone and HER2 drugs do not work, so chemotherapy and immunotherapy are often used.'},
+ {q:'Can a bump or bruise to the breast cause cancer?',a:['Yes','No'],c:1,e:'An injury does not cause breast cancer, though it may lead someone to notice a lump that was already there.'},
+ {q:'Why do doctors check lymph nodes under the arm?',a:['To see whether cancer has started to spread','To measure blood sugar','To test hearing'],c:0,e:'The underarm lymph nodes are often the first place breast cancer spreads.'},
+ {q:'Does finding breast cancer early make a difference?',a:['Yes, a big one','No, it makes no difference'],c:0,e:'In the US, 5-year survival is about 99% when it is found before spreading beyond the breast.'},
+ {q:'What does hormone therapy for breast cancer do?',a:['Blocks estrogen from fueling cancer growth','Adds vitamins to the blood','Replaces surgery for everyone'],c:0,e:'Many breast cancers are hormone receptor-positive. Hormone therapy lowers the chance of the cancer coming back.'},
+ {q:'What is a good way to support someone in treatment?',a:['Offer specific help, like meals or rides','Stay away so they can rest','Tell them to stay positive all the time'],c:0,e:'Practical help and listening matter. People are allowed to have hard days.'},
+ {q:'Breast awareness means...',a:['Knowing what is normal for you and reporting changes','Checking only on one set day each year','Leaving it to doctors'],c:0,e:'Being familiar with how your breasts usually look and feel helps you notice changes.'},
+ {q:'What is a clinical trial?',a:['A study that tests new treatments','A court case','A hospital tour'],c:0,e:'Clinical trials are how new treatments are proven safe and effective.'}];
+const LINKS='<p class="small">Learn more from <a href="https://www.cancer.org/cancer/types/breast-cancer.html" target="_blank" rel="noopener">American Cancer Society</a>, <a href="https://www.cancer.gov/types/breast" target="_blank" rel="noopener">National Cancer Institute</a> or <a href="https://www.who.int/news-room/fact-sheets/detail/breast-cancer" target="_blank" rel="noopener">WHO</a>.</p>';
+const SRC={shot:'Immune shots',arc:'Immunotherapy',blades:'Care team',nova:'Awareness wave',boom:'Radiation therapy',home:'Targeted therapy',aura:'Hormone therapy',surg:'Surgery',dash:'Dash',burst:'Awareness burst'};
+
+/* =================== GAME LOGIC =================== */
+function newRun(){
+ const H0=HEROES.find(h=>h.id===SAVE.hero&&SAVE.heroes[h.id])||HEROES[0],M=SAVE.meta,mv=k=>M[k]||0;
+ G={t:0,score:0,kills:0,lvl:1,xp:0,need:6,chain:0,ct:0,lm:0,shake:0,flash:0,spT:1,bossT:60,bossN:0,stage:0,hs:0,intro:2.4,
+  novaT:4,arcT:1,boomT:1,homeT:1,surgT:3,auraT:.5,bl:0,dashN:0,quizAt:0,hero:H0.id,tsT:0,tsCD:0,stT0:0,bossOn:0,fin:0,winT:0,dieT:0,trail:[],factsShown:{},
+  p:{x:WW/2,y:WH/2,hp:100,mhp:100,spd:215,r:12,cd:0,dash:0,dc:0,dcd:1.4,inv:0,fx:1,fy:0,face:1,rev:0,mv:0,an:0,blk:3},
+  st:{rate:3,dmg:10,multi:1,pierce:0,blades:0,mag:80,nova:0,arc:0,crit:0,boom:0,home:0,shield:0,surg:0,regen:0,xpm:1,choices:3,dashDmg:0,eat:0},
+  b:[],eb:[],en:[],gm:[],pt:[],tx:[],rg:[],zap:[],pk:[],dn:[],bm:[],hm:[],sl:[],up:{},evo:{},dmgBy:{},rerolls:2+mv('reroll')};
+ const p=G.p,s=G.st;
+ p.mhp=100+mv('hp')*15;s.dmg*=1+mv('dmg')*.08;s.mag+=mv('mag')*20;s.crit+=mv('crit')*.04;s.rate*=1+mv('rate')*.06;p.spd*=1+mv('spd')*.04;p.rev=mv('rev');
+ H0.apply(p,s,G);p.mhp=Math.round(p.mhp);p.hp=p.mhp;
+ CAM.x=p.x-VW()/2;CAM.y=p.y-VH()/2;ms=0;
+ S='play';hide();document.body.classList.add('play');document.body.classList.toggle('chrono',!!s.tstop);tsReq=0;last=performance.now();snd(300,.25,'sawtooth',.05,700);
+ SAVE.stats.runs++;save();
+ setTimeout(()=>{if(G&&G.t<6)tip(s.tstop?'Admin power: Time stop':'Stage 1/'+STG.length+': '+STG[0].n,s.tstop?'Press T (or tap Time) to freeze every rogue cell for 5 seconds.':STG[0].note,8)},2600);
+}
+function edge(){const p=G.p,R=Math.hypot(VW(),VH())/2+70;
+ for(let i=0;i<12;i++){const a=rnd(0,TAU),x=p.x+Math.cos(a)*R,y=p.y+Math.sin(a)*R;if(x>40&&x<WW-40&&y>40&&y<WH-40)return[x,y]}
+ return[clamp(p.x+R*(p.x<WW/2?1:-1),40,WW-40),clamp(p.y,40,WH-40)]}
+function spawn(k,x,y,el){const T=ET[k];if(G.en.length>=260&&!T.boss)return null;const m=1+G.t/80,bm=T.boss?1+G.stage*.55:1,em=el?4:1,sz=el?4/3:1;
+ const e={k,B:T.boss?1:0,x,y,el:el?1:0,sz,r:T.r*sz,hp:T.hp*m*bm*em,sp:T.sp*(1+Math.min(G.t/400,.5))*(T.boss?1:STG[G.stage].spd),dmg:T.dmg,
+  kx:0,ky:0,bt:0,f:0,t:1+rnd(0,2),u:4,w:T.boss?1.2:.5,ph:rnd(0,4),cl:0,clT:rnd(2,4),slow:1,face:1,ia:-9,dh:-1,bh:0,c:0,ax:0,ay:0,ang:rnd(0,TAU),ms:0,mt:2.5,ph2:0};
+ e.mhp=e.hp;if(k==='clot')e.sh=e.msh=e.hp*1.3;if(k==='dormant')e.slp=1;G.en.push(e);return e}
+function stream(x,y,a,n){const ux=Math.cos(a),uy=Math.sin(a);for(let i=0;i<n;i++){const e=spawn('ctc',x-ux*i*34+rnd(-8,8),y-uy*i*34+rnd(-8,8));if(e){e.dx=ux;e.dy=uy;e.life=11;e.w=.25}}}
+function fire(x,y,a,v,d,l=7){if(G.eb.length<420)G.eb.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l,d,big:1})}
+function ringShot(e,n,v,d,o=rnd(0,TAU)){for(let i=0;i<n;i++)fire(e.x,e.y,o+i*TAU/n,v,d)}
+function bossAI(e,dt,dx,dy){const g=G,p=g.p,f=e.hp/e.mhp,aim=Math.atan2(dy,dx),rage=f<.5;e.t-=dt;e.u-=dt;let mv=1;
+ if(e.k==='lobboss'){e.ang+=dt*(rage?2.6:1.9);const arms=rage?3:2;if(e.ph%5<3.2&&e.t<=0){e.t=rage?.1:.14;for(let i=0;i<arms;i++)fire(e.x,e.y,e.ang+i*TAU/arms,150,10)}
+  if(e.u<=0){e.u=rage?5:7;for(let i=0;i<2;i++){const n=spawn('split',e.x+rnd(-40,40),e.y+rnd(-40,40));if(n)n.w=0}}}
+ else if(e.k==='nodeboss'){e.mt-=dt;
+  if(e.ms===0){if(e.mt<=0){e.ms=1;e.mt=.9;e.cl=1;snd(240,.3,'sine',.04,90)}}
+  else if(e.ms===1){mv=.3;if(e.mt<=0){const a=rnd(0,TAU),R=rnd(240,300);e.x=clamp(p.x+Math.cos(a)*R,60,WW-60);e.y=clamp(p.y+Math.sin(a)*R,60,WH-60);e.cl=0;e.ms=2;e.mt=rage?.6:.85;
+   const dd=Math.hypot(p.x-e.x,p.y-e.y)||1;e.ax=(p.x-e.x)/dd;e.ay=(p.y-e.y)/dd;e.c=1;burst(e.x,e.y,20,['#8a94f0','#fff'],200,.4,3);snd(300,.2,'square',.05,120)}}
+  else if(e.ms===2){mv=0;if(e.mt<=0){e.ms=3;e.mt=.55;e.c=0}}
+  else{e.ox=e.ax;e.oy=e.ay;mv=11;if(e.mt<=0){e.ms=0;e.mt=rage?1.6:2.4;ringShot(e,rage?14:10,170,12);snd(110,.25,'square',.05,60)}}
+  if(e.u<=0){e.u=9;for(let i=0;i<4;i++)spawn('swarm',e.x+rnd(-40,40),e.y+rnd(-40,40))}}
+ else if(e.k==='metboss'){const arms=rage?6:4;e.ang+=dt*(rage?1.5:1.1);if(e.t<=0){e.t=rage?.2:.26;for(let i=0;i<arms;i++)fire(e.x,e.y,e.ang+i*TAU/arms,160,11)}
+  if(e.u<=0){e.u=rage?5:7;stream(e.x,e.y,aim,6)}}
+ else if(e.k==='finalboss'){const ph=f>2/3?0:f>1/3?1:2;
+  if(ph!==e.ph2){e.ph2=ph;g.eb=[];g.shake=Math.max(g.shake,16);g.tx.push({s:'The last mutation is changing!',l:2});ringShot(e,24,140,12);snd(80,.7,'sawtooth',.08,30);e.t=1.2;e.u=3;e.ms=0;e.mt=2}
+  e.ang+=dt*(ph===2?1.7:1.2);
+  if(ph===0){if(e.t<=0){e.t=2;ringShot(e,18,165,12);for(let i=-1;i<=1;i++)fire(e.x,e.y,aim+i*.18,250,12)}
+   if(e.u<=0){e.u=7;for(let i=0;i<3;i++){const n=spawn('dormant',e.x+rnd(-70,70),e.y+rnd(-70,70));if(n)n.w=0}}}
+  else if(ph===1){if(e.t<=0){e.t=.11;for(let i=0;i<2;i++)fire(e.x,e.y,e.ang+i*Math.PI,155,11)}if(e.u<=0){e.u=3.2;ringShot(e,16,150,12);for(let i=-2;i<=2;i++)fire(e.x,e.y,aim+i*.16,260,12)}}
+  else{e.mt-=dt;if(e.ms===0){if(e.t<=0){e.t=.24;for(let i=0;i<6;i++)fire(e.x,e.y,e.ang+i*TAU/6,165,12)}if(e.mt<=0){e.ms=2;e.mt=.8;e.ax=Math.cos(aim);e.ay=Math.sin(aim);e.c=1}}
+   else if(e.ms===2){mv=0;if(e.mt<=0){e.ms=3;e.mt=.5;e.c=0}}
+   else{e.ox=e.ax;e.oy=e.ay;mv=12;if(e.mt<=0){e.ms=0;e.mt=3.5;ringShot(e,20,170,12)}}}}
+ return mv}
+function burst(x,y,n,cols,sp=160,l=.6,s=3){for(let i=0;i<n;i++){const a=rnd(0,TAU),v=rnd(.2,1)*sp;G.pt.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l,ml:l,c:pick1(cols),s:Math.round(rnd(2,s+1))})}}
+function shatter(e){const P=EDEF[e.k].P,n=e.B?80:e.k==='tank'?26:12;burst(e.x,e.y,n,[P.m,P.l,P.d,P.h],e.B?340:180,.75,e.B?6:4);G.rg.push({x:e.x,y:e.y,r:e.r*.5,R:e.r*1.8,l:.25,ml:.25,c:P.l})}
+function hit(e,d,src,crit){if(e.dead)return;if(e.sh>0){e.sh-=d*(src==='arc'||src==='nova'||src==='burst'||src==='surg'?2.5:1);d*=.25;if(e.sh<=0){e.sh=0;burst(e.x,e.y,16,['#ffe9a8','#fff6d6','#c9a040'],200,.5,3);snd(700,.1,'square',.04,300)}}
+ const real=Math.min(d,e.hp);e.hp-=d;if(e.f<-.06)e.f=.07;G.dmgBy[src]=(G.dmgBy[src]||0)+real;
+ if(crit||d>=60)G.dn.push({x:e.x+rnd(-6,6),y:e.y-e.r,s:Math.round(d)+(crit?'!':''),l:.7,c:crit?'#ffd166':'#fff0f7'});
+ if(e.hp<=0){e.dead=1;kill(e)}}
+function dropGems(x,y,v){const g=G,list=[];while(v>=10){list.push(10);v-=10}while(v>=3){list.push(3);v-=3}while(v>=1){list.push(1);v-=1}
+ for(const val of list){if(g.gm.length>420){const m=g.gm[Math.random()*g.gm.length|0];m.v+=val;continue}
+  g.gm.push({x:x+(list.length>1?rnd(-24,24):0),y:y+(list.length>1?rnd(-24,24):0),v:val,s:0,ph:rnd(0,6)})}}
+function kill(e){const T=ET[e.k],g=G,p=g.p;
+ if(e.k==='split')for(let i=0;i<3;i++){const n=spawn('swarm',e.x+rnd(-14,14),e.y+rnd(-14,14));if(n)n.w=0}
+ g.kills++;g.chain++;g.ct=2.4;g.score+=Math.round(T.sc*(1+Math.min(g.chain,100)/20)*(e.el?3:1));
+ shatter(e);g.shake=Math.max(g.shake,e.B?18:e.k==='tank'?6:2);dropGems(e.x,e.y,T.xp*(e.el?3:1));
+ if(g.st.eat)p.hp=Math.min(p.mhp,p.hp+.6);
+ const r=Math.random();
+ if(e.el||r<.022)g.pk.push({x:e.x,y:e.y,t:'h',l:18});else if(r<.031)g.pk.push({x:e.x,y:e.y,t:'r',l:18});
+ else if(r<.039)g.pk.push({x:e.x,y:e.y,t:'m',l:18});else if(r<.05)g.pk.push({x:e.x,y:e.y,t:'i',l:22});
+ if(e.B){g.hs=.2;p.hp=Math.min(p.mhp,p.hp+30);g.eb=[];g.bossOn=0;g.pk.push({x:e.x,y:e.y,t:'c',l:999});snd(120,.5,'sawtooth',.08,30);
+  if(g.stage>=STG.length-1){g.winT=2.5;g.bossOn=2;g.tx.push({s:'The last mutation is gone!',l:3})}
+  else{let c=0;for(const x of g.en)if(!x.dead&&!x.B){x.dead=1;if(c++<40)shatter(x)}
+   g.stage++;g.stT0=g.t;const st=STG[g.stage];g.tx.push({s:'Stage '+(g.stage+1)+'/'+STG.length+': '+st.n,l:3});setTimeout(()=>{if(G===g)tip('Entering the '+st.n.toLowerCase(),st.note,9)},800);g.quizAt=g.t+3}}
+ else snd(rnd(180,260),.06,'square',.02,60)}
+function hurt(d){const g=G,p=g.p;if(p.inv>0||S!=='play')return;p.hp-=d;p.inv=.7;g.shake=Math.max(g.shake,12);g.flash=.3;g.chain=0;
+ snd(150,.2,'sawtooth',.07,50);burst(p.x,p.y,14,['#ff3b5c','#ffc2e0','#fff'],220,.5,4);
+ if(p.hp<=0){if(p.rev>0){p.rev--;p.hp=p.mhp/2;p.inv=2.5;g.eb=[];for(const e of g.en){const dd=Math.hypot(e.x-p.x,e.y-p.y)||1;if(dd<300){e.kx+=(e.x-p.x)/dd*900;e.ky+=(e.y-p.y)/dd*900}}
+  g.rg.push({x:p.x,y:p.y,r:10,R:320,l:.5,ml:.5,c:'#ffd166'});g.tx.push({s:'Renewed hope!',l:2});snd(500,.4,'triangle',.07,1200)}
+ else{p.hp=0;burst(p.x,p.y,70,['#ff5fa8','#ffc2e0','#ffd166','#fff'],340,1.1,5);S='dying';g.dieT=1.4;snd(220,.7,'sawtooth',.07,40)}}}
+function evoCheck(){const s=G.st;for(const v of EVO)if(!G.evo[v.id]&&v.req(s,G.up)){G.evo[v.id]=1;if(v.fx)v.fx(s);G.tx.push({s:'Evolved: '+v.n,l:3});tip('Evolution: '+v.n,v.real,7);snd(660,.4,'triangle',.06,1320)}}
+function nearest(x,y,f,maxD=1e12){let t=null,bd=maxD;for(const e of G.en){if(e.dead||e.w>0||(f&&!f(e)))continue;const d=(e.x-x)**2+(e.y-y)**2;if(d<bd){bd=d;t=e}}return t}
+
+function upd(dt){
+ const g=G,p=g.p,s=g.st;
+ if(g.intro>0){g.intro-=dt;if(g.intro<=0)snd(700,.15,'square',.05,900);return}
+ const frz=g.tsT>0;
+ if(frz){g.tsT-=dt;if(g.tsT<=0){g.tx.push({s:'Time resumes',l:1.4});snd(900,.4,'triangle',.06,200)}}else if(g.tsCD>0)g.tsCD-=dt;
+ if(!frz)g.t+=dt;
+ /* input */
+ let ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0),iy=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0);
+ if(joy){const dx=joy.x-joy.ox,dy=joy.y-joy.oy,d=Math.hypot(dx,dy);if(d>8){const k=Math.min(d,60)/60;ix=dx/d*k;iy=dy/d*k}}
+ const gp=navigator.getGamepads&&navigator.getGamepads()[0];if(gp){const ax=gp.axes[0]||0,ay=gp.axes[1]||0;if(Math.hypot(ax,ay)>.2){ix=ax;iy=ay}if((gp.buttons[0]&&gp.buttons[0].pressed)||(gp.buttons[5]&&gp.buttons[5].pressed))dashReq=1;if(gp.buttons[3]&&gp.buttons[3].pressed)tsReq=1}
+ let il=Math.hypot(ix,iy);if(il>1){ix/=il;iy/=il;il=1}
+ if(il>.1){p.fx=ix/il;p.fy=iy/il;if(Math.abs(ix)>.1)p.face=ix>0?1:-1}
+ p.mv=il>.1?1:0;p.an+=dt*(p.mv?11:2.4);p.blk-=dt;if(p.blk<-.14)p.blk=rnd(2,5);
+ p.dc-=dt;p.inv-=dt;
+ if((keys.Space||keys.ShiftLeft||keys.ShiftRight||dashReq)&&p.dc<=0){p.dash=.16;p.dc=p.dcd;p.inv=Math.max(p.inv,.32);g.dashN++;snd(260,.12,'sine',.06,700)}
+ dashReq=0;
+ if((keys.KeyT||tsReq)&&s.tstop&&!frz&&g.tsCD<=0){g.tsT=5;g.tsCD=15;g.shake=Math.max(g.shake,10);g.rg.push({x:p.x,y:p.y,r:10,R:Math.max(VW(),VH()),l:.6,ml:.6,c:'#c9b8ff',w:12});g.tx.push({s:'Time stop!',l:1.6});snd(140,.6,'sawtooth',.07,1400)}
+ tsReq=0;
+ let vx=ix*p.spd,vy=iy*p.spd;
+ if(p.dash>0){p.dash-=dt;vx=p.fx*720;vy=p.fy*720;g.trail.push({x:p.x,y:p.y,l:.22,fr:Math.floor(p.an)%4,face:p.face});
+  if(s.dashDmg)for(const e of g.en)if(!e.dead&&e.dh!==g.dashN&&(e.x-p.x)**2+(e.y-p.y)**2<(e.r+p.r+14)**2){e.dh=g.dashN;hit(e,s.dmg*2.5,'dash');burst(e.x,e.y,4,['#ffd09a','#fff'],120,.3,3)}}
+ p.x=clamp(p.x+vx*dt,p.r,WW-p.r);p.y=clamp(p.y+vy*dt,p.r,WH-p.r);
+ const rg=s.regen+(g.evo.aura?1.5:0);if(rg)p.hp=Math.min(p.mhp,p.hp+rg*dt);
+ /* main gun */
+ p.cd-=dt;
+ if(p.cd<=0){const R=Math.max(VW(),VH())*.62,t=nearest(p.x,p.y,e=>!(e.cl>0),R*R);
+  if(t){const a=Math.atan2(t.y-p.y,t.x-p.x),n=s.multi;for(let i=0;i<n;i++){const aa=a+(i-(n-1)/2)*.15;g.b.push({x:p.x,y:p.y,vx:Math.cos(aa)*640,vy:Math.sin(aa)*640,l:1.1,d:s.dmg,pr:s.pierce,h:[]})}
+   p.cd=1/s.rate;snd(540,.05,'square',.012,300)}else p.cd=.05}
+ for(const b of g.b){b.x+=b.vx*dt;b.y+=b.vy*dt;b.l-=dt;if(b.l<=0||b.x<-20||b.x>WW+20||b.y<-20||b.y>WH+20){b.dead=1;continue}
+  for(const e of g.en){if(e.dead||e.w>0||e.cl>0||b.h.includes(e))continue;const r=e.r+5;if((e.x-b.x)**2+(e.y-b.y)**2<r*r){b.h.push(e);const c=Math.random()<s.crit;
+   hit(e,b.d*(c?2:1),'shot',c);burst(b.x,b.y,2,['#ffc2e0','#fff'],90,.25,2);if(!e.B){e.kx+=b.vx*.05;e.ky+=b.vy*.05}if(b.pr--<=0){b.dead=1;break}}}}
+ /* care team hearts */
+ g.bl+=dt*3.4;
+ for(let i=0;i<s.blades;i++){const a=g.bl+i*TAU/s.blades,bx=p.x+Math.cos(a)*66,by=p.y+Math.sin(a)*66;
+  for(const e of g.en){if(e.bt>0||e.dead||e.w>0)continue;if((e.x-bx)**2+(e.y-by)**2<(e.r+11)**2){hit(e,s.dmg*.9*(g.evo.storm?1.3:1),'blades');e.bt=.28;burst(bx,by,2,['#ff3b7a','#ffd0e0'],80,.2,2)}}}
+ /* awareness wave */
+ if(s.nova){g.novaT-=dt;if(g.novaT<=0){g.novaT=Math.max(3,7.5-s.nova*.9);const R=160+s.nova*30;g.rg.push({x:p.x,y:p.y,r:12,R,l:.45,ml:.45,c:'#ff5fa8',w:8});g.shake=Math.max(g.shake,5);snd(90,.35,'sawtooth',.06,300);
+  for(const e of g.en){const d=Math.hypot(e.x-p.x,e.y-p.y);if(d<R){e.cl=0;hit(e,20+s.nova*10,'nova');if(!e.B){e.kx+=(e.x-p.x)/(d||1)*500;e.ky+=(e.y-p.y)/(d||1)*500}}}
+  g.eb=g.eb.filter(b=>Math.hypot(b.x-p.x,b.y-p.y)>R)}}
+ /* immunotherapy lightning */
+ if(s.arc){g.arcT-=dt;if(g.arcT<=0){g.arcT=Math.max(.5,2.2-s.arc*.3)/(g.evo.storm?2:1);let c=nearest(p.x,p.y,null,420*420);
+  if(c){const n=2+s.arc+(g.evo.storm?2:0),used=[],pts=[[p.x,p.y]];for(let i=0;i<n&&c;i++){pts.push([c.x,c.y]);used.push(c);if(c.cl>0){c.cl=0;c.clT=3}hit(c,s.dmg*1.6,'arc');
+   let nx=null,nd=52000;for(const e of g.en)if(!e.dead&&!(e.w>0)&&!used.includes(e)){const d=(e.x-c.x)**2+(e.y-c.y)**2;if(d<nd){nd=d;nx=e}}c=nx}
+   g.zap.push({pts,l:.16});snd(900,.1,'sawtooth',.025,200)}}}
+ /* radiation therapy */
+ if(s.boom){g.boomT-=dt;if(g.boomT<=0){g.boomT=Math.max(1.2,3-s.boom*.35);const t=nearest(p.x,p.y),a=t?Math.atan2(t.y-p.y,t.x-p.x):rnd(0,TAU),n=g.evo.prec?2:1;
+  for(let i=0;i<n;i++){const aa=a+i*Math.PI;g.bm.push({x:p.x,y:p.y,vx:Math.cos(aa)*430,vy:Math.sin(aa)*430,t:0})}snd(400,.12,'triangle',.03,700)}}
+ for(const b of g.bm){b.t+=dt;if(b.t<.6){b.x+=b.vx*dt;b.y+=b.vy*dt}else{const dx=p.x-b.x,dy=p.y-b.y,d=Math.hypot(dx,dy)||1;b.x+=dx/d*580*dt;b.y+=dy/d*580*dt;if(d<18)b.dead=1}
+  if(b.t>3)b.dead=1;
+  for(const e of g.en)if(!e.dead&&!(e.w>0)&&!(e.bh>g.t)&&(e.x-b.x)**2+(e.y-b.y)**2<(e.r+14)**2){e.bh=g.t+.35;hit(e,s.dmg*1.5*(1+s.boom*.15),'boom');burst(b.x,b.y,3,['#ff5fa8','#fff'],100,.25,2)}}
+ /* targeted therapy */
+ if(s.home){g.homeT-=dt;if(g.homeT<=0){g.homeT=Math.max(.7,2.2-s.home*.25);const n=s.home+(g.evo.abs?3:0);for(let i=0;i<n;i++){const a=rnd(0,TAU);g.hm.push({x:p.x,y:p.y,vx:Math.cos(a)*220,vy:Math.sin(a)*220,l:3})}}}
+ for(const b of g.hm){b.l-=dt;const t=nearest(b.x,b.y,e=>!(e.cl>0));
+  if(t){const d=Math.hypot(t.x-b.x,t.y-b.y)||1;b.vx+=(t.x-b.x)/d*950*dt;b.vy+=(t.y-b.y)/d*950*dt;if(d<t.r+7){hit(t,s.dmg*.9,'home');burst(b.x,b.y,3,['#ffd166','#fff'],90,.25,2);b.l=0}}
+  const v=Math.hypot(b.vx,b.vy);if(v>400){b.vx*=400/v;b.vy*=400/v}b.x+=b.vx*dt;b.y+=b.vy*dt}
+ /* hormone therapy aura */
+ if(s.shield){const R=84+s.shield*18;g.auraT-=dt;const tick=g.auraT<=0;if(tick)g.auraT=.5;
+  for(const e of g.en){if(e.dead||e.w>0)continue;if((e.x-p.x)**2+(e.y-p.y)**2<(R+e.r)**2){e.slow=Math.max(.5,1-(.2+.06*s.shield));e.ia=g.t;if(tick)hit(e,s.dmg*.3*s.shield,'aura')}}}
+ /* surgery */
+ if(s.surg){g.surgT-=dt;if(g.surgT<=0){g.surgT=Math.max(2,6-s.surg*.7);const a=Math.atan2(p.fy,p.fx),R=110+s.surg*14,dm=s.dmg*(2.4+s.surg*.4);
+  g.sl.push({x:p.x,y:p.y,a,R,l:.28});snd(1200,.12,'sawtooth',.035,300);
+  for(const e of g.en){if(e.dead||e.w>0)continue;const dx=e.x-p.x,dy=e.y-p.y,d=Math.hypot(dx,dy);if(d>R+e.r)continue;let da=Math.abs(Math.atan2(dy,dx)-a);if(da>Math.PI)da=TAU-da;
+   if(da<1.15||d<e.r+p.r)hit(e,dm*(g.evo.neo&&g.t-e.ia<.2?2:1),'surg')}}}
+ /* spawning */
+ if(!frz)g.spT-=dt*STG[g.stage].rate*1.2;
+ if(g.spT<=0){g.spT=Math.max(.16,.85/(1+g.t/60));const st=STG[g.stage],T0=g.t-g.stT0,pool=st.R.filter(q=>T0>=(q[2]||0));
+  let r=Math.random()*pool.reduce((a,q)=>a+q[1],0),k=pool[0][0];for(const q of pool){r-=q[1];if(r<=0){k=q[0];break}}
+  const el=g.t>75&&Math.random()<(st.elite||.05)&&!/swarm|ctc|tank|split/.test(k),[x,y]=edge();
+  if(k==='swarm'){const n=Math.floor(rnd(4,8)+g.t/60);for(let i=0;i<n;i++)spawn('swarm',x+rnd(-30,30),y+rnd(-30,30))}
+  else if(k==='ctc')stream(x,y,Math.atan2(p.y-y,p.x-x)+rnd(-.25,.25),Math.floor(rnd(3,7)));
+  else spawn(k,x,y,el)}
+ if(!g.bossOn&&g.t-g.stT0>=STG[g.stage].bossAt){g.bossOn=1;const bk=STG[g.stage].boss,[x,y]=edge();spawn(bk,x,y);g.tx.push({s:INFO[bk].n+' approaches',l:2.6});snd(70,.8,'sawtooth',.08,40)}
+ /* enemies */
+ for(const e of g.en){
+  e.bt-=dt;e.f-=dt;if(frz)continue;e.ph+=dt;if(e.w>0){e.w-=dt;continue}
+  const dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1;let mx=dx/d,my=dy/d,sp=e.sp*e.slow;e.slow=1;e.face=dx>0?1:-1;
+  if(e.k==='shoot'){if(d<240){mx=-mx;my=-my}else if(d<320)sp*=.15;e.t-=dt;if(e.t<=0){e.t=2.2;g.eb.push({x:e.x,y:e.y,vx:mx*0+dx/d*190,vy:dy/d*190,l:6,d:8})}}
+  if(e.k==='cloak'){e.clT-=dt;if(e.clT<=0){if(e.cl>0){e.cl=0;e.clT=rnd(2.5,4)}else{e.cl=1;e.clT=rnd(1.8,2.6)}}}
+  if(e.k==='ctc'){e.life-=dt;if(e.life<=0){e.dead=1;continue}mx=e.dx*.88+mx*.12;my=e.dy*.88+my*.12;e.face=e.dx>0?1:-1}
+  if(e.slp){if(d<210||e.hp<e.mhp){e.slp=0;e.sp*=1.7;g.dn.push({x:e.x,y:e.y-e.r,s:'!',l:.8,c:'#ffd166'});snd(520,.08,'square',.03,900)}
+   else{e.x+=e.kx*dt;e.y+=e.ky*dt;const k=Math.pow(.02,dt);e.kx*=k;e.ky*=k;continue}}
+  if(e.B&&!e.B){sp*=bossAI(e,dt,dx,dy);if(e.ox!==undefined){mx=e.ox;my=e.oy;e.ox=undefined}}
+  if(e.k==='boss'){const rage=e.hp<e.mhp/2?.6:1;e.t-=dt;e.u-=dt;
+   if(e.t<=0){e.t=2.4*rage;const n=e.final?18:14,o=rnd(0,TAU);for(let i=0;i<n;i++){const a=o+i*TAU/n;g.eb.push({x:e.x,y:e.y,vx:Math.cos(a)*170,vy:Math.sin(a)*170,l:7,d:12,big:1})}
+    if(rage<1){const a=Math.atan2(dy,dx);for(let i=-1;i<=1;i++)g.eb.push({x:e.x,y:e.y,vx:Math.cos(a+i*.2)*260,vy:Math.sin(a+i*.2)*260,l:5,d:12,big:1})}snd(110,.25,'square',.05,60)}
+   if(e.u<=0){e.u=8;for(let i=0;i<4;i++)spawn('swarm',e.x+rnd(-40,40),e.y+rnd(-40,40))}}
+  if(e.k==='charge'){e.t-=dt;if(e.t<=0&&!(e.c>0)){e.c=.75;e.t=3}if(e.c>0){e.c-=dt;if(e.c>.35){sp=0;e.ax=mx;e.ay=my}else{mx=e.ax;my=e.ay;sp=520}}}
+  e.x+=(mx*sp+e.kx)*dt;e.y+=(my*sp+e.ky)*dt;const k=Math.pow(.02,dt);e.kx*=k;e.ky*=k;
+  e.x=clamp(e.x,e.r*.5,WW-e.r*.5);e.y=clamp(e.y,e.r*.5,WH-e.r*.5);
+  if(d<e.r*.85+p.r&&p.inv<=0){hurt(e.dmg);if(!e.B){e.kx-=mx*300;e.ky-=my*300}}}
+ if(g.en.length<220&&!frz)for(let i=0;i<g.en.length;i++){const a=g.en[i];for(let j=i+1;j<g.en.length;j++){const b=g.en[j],dx=b.x-a.x,dy=b.y-a.y,m=(a.r+b.r)*.8;
+  if(dx*dx+dy*dy<m*m){const d=Math.hypot(dx,dy)||1,o=(m-d)*.5,ux=dx/d*o,uy=dy/d*o;if(!a.B){a.x-=ux;a.y-=uy}if(!b.B){b.x+=ux;b.y+=uy}}}}
+ for(const b of g.eb){if(frz)break;b.x+=b.vx*dt;b.y+=b.vy*dt;b.l-=dt;if(b.l<=0||b.x<-30||b.x>WW+30||b.y<-30||b.y>WH+30){b.dead=1;continue}
+  const br=b.big?8:6;if((b.x-p.x)**2+(b.y-p.y)**2<(p.r+br)**2&&p.inv<=0){hurt(b.d);b.dead=1}}
+ /* gems */
+ for(const m of g.gm){const dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy)||1;
+  if(d<s.mag||m.s>0){m.s=Math.min((m.s||160)+760*dt,1000);m.x+=dx/d*m.s*dt;m.y+=dy/d*m.s*dt}
+  if(d<p.r+9){m.dead=1;g.xp+=m.v*s.xpm;g.score+=m.v;snd(800+Math.min(g.chain,40)*10,.04,'sine',.025)}}
+ /* pickups */
+ for(const q of g.pk){q.l-=dt;if(Math.hypot(q.x-p.x,q.y-p.y)<p.r+16){q.l=0;pickup(q)}}
+ if(g.xp>=g.need&&S==='play'){g.xp-=g.need;g.lvl++;g.need=Math.floor(5+g.lvl*3.2);openUp('lvl');}
+ /* timers + particles */
+ for(const q of g.pt){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vx*=.95;q.vy*=.95;q.l-=dt}
+ for(const r of g.rg){r.l-=dt;r.r+=(r.R-r.r)*Math.min(1,dt*12)}
+ for(const t of g.tx)t.l-=dt;for(const z of g.zap)z.l-=dt;for(const d of g.dn){d.l-=dt;d.y-=34*dt}for(const t of g.trail)t.l-=dt;for(const sl of g.sl)sl.l-=dt;
+ g.ct-=dt;if(g.ct<=0)g.chain=0;if(g.chain<5)g.lm=0;
+ for(const m of[25,50,100,200])if(g.chain>=m&&g.lm<m){g.lm=m;g.tx.push({s:'Chain x'+m+'!',l:1.2});snd(900,.2,'triangle',.05,1500)}
+ g.shake*=Math.pow(.003,dt);g.flash-=dt;
+ const alive=x=>!x.dead;g.b=g.b.filter(alive);g.eb=g.eb.filter(alive);g.en=g.en.filter(alive);g.gm=g.gm.filter(alive);g.bm=g.bm.filter(alive);
+ g.hm=g.hm.filter(b=>b.l>0);g.pt=g.pt.filter(x=>x.l>0);g.rg=g.rg.filter(x=>x.l>0);g.tx=g.tx.filter(x=>x.l>0);g.zap=g.zap.filter(x=>x.l>0);g.pk=g.pk.filter(x=>x.l>0);
+ g.dn=g.dn.filter(x=>x.l>0);g.trail=g.trail.filter(x=>x.l>0);g.sl=g.sl.filter(x=>x.l>0);
+ if(g.pt.length>PTCAP)g.pt.splice(0,g.pt.length-PTCAP);
+ if(S!=='play')return;
+ /* finishing, quizzes, first sightings */
+ if(g.winT>0){g.winT-=dt;if(g.winT<=0){endRun(true);return}}
+ if(g.quizAt&&g.t>=g.quizAt){g.quizAt=0;openQuiz(true);return}
+ const sw=VW(),sh=VH();
+ for(const e of g.en){if(e.dead||e.w>0)continue;const sx=e.x-CAM.x,sy=e.y-CAM.y;if(sx<30||sx>sw-30||sy<30||sy>sh-30)continue;
+  const k=!SAVE.seen[e.k]?e.k:(e.el&&!SAVE.seen.elite?'elite':null);
+  if(k){SAVE.seen[k]=1;save();if(SAVE.set.info){openInfo(k);return}else tip('New: '+INFO[k].n,INFO[k].real,8)}}}
+function pickup(q){const g=G,p=g.p;
+ if(q.t==='h'){p.hp=Math.min(p.mhp,p.hp+25);g.tx.push({s:'+25 health',l:1});snd(600,.2,'triangle',.06,1200)}
+ else if(q.t==='r'){g.shake=14;g.eb=[];for(const e of g.en)if(!e.dead&&(e.x-p.x)**2+(e.y-p.y)**2<(VW()*.8)**2)hit(e,e.B?120:80,'burst');
+  g.rg.push({x:p.x,y:p.y,r:10,R:Math.max(VW(),VH()),l:.5,ml:.5,c:'#ff5fa8',w:10});g.tx.push({s:'Awareness burst!',l:1.4});snd(120,.4,'sawtooth',.07,500)}
+ else if(q.t==='m'){for(const m of g.gm)m.s=300;g.tx.push({s:'Community pull!',l:1.2});snd(500,.3,'sine',.05,1000)}
+ else if(q.t==='i'){const pool=FACTS.filter((f,i)=>!g.factsShown[i]);const f=pool.length?pick1(pool):pick1(FACTS);g.factsShown[FACTS.indexOf(f)]=1;g.xp+=3*g.st.xpm;tip('Info leaflet',f,9);snd(700,.15,'triangle',.05,1000)}
+ else if(q.t==='c'){snd(500,.3,'triangle',.06,1000);openUp('chest')}}
+
+/* =================== RENDERING =================== */
+const PX8='8px "Press Start 2P",monospace',PX10='10px "Press Start 2P",monospace',PX16='16px "Press Start 2P",monospace';
+function dsp(c,x,y,s,f,a){const w=c.width*s,h=c.height*s;if(f<0){ctx.save();ctx.translate(Math.round(x),0);ctx.scale(-1,1);ctx.drawImage(c,Math.round(-w/2),Math.round(y-h/2),w,h);ctx.restore()}
+ else ctx.drawImage(c,Math.round(x-w/2),Math.round(y-h/2),w,h)}
+const motes=Array.from({length:46},()=>({x:Math.random(),y:Math.random(),z:rnd(.3,1),s:Math.random()<.3?2:1}));
+let menuStage=0,menuT=0;
+function drawBG(si){const x0=Math.max(0,Math.floor(CAM.x/CW)),y0=Math.max(0,Math.floor(CAM.y/CW)),x1=Math.min(Math.ceil(WW/CW)-1,Math.floor((CAM.x+VW())/CW)),y1=Math.min(Math.ceil(WH/CW)-1,Math.floor((CAM.y+VH())/CW));
+ ctx.fillStyle='#5a1a3c';ctx.fillRect(CAM.x-4,CAM.y-4,VW()+8,VH()+8);
+ for(let j=y0;j<=y1;j++)for(let i=x0;i<=x1;i++){const w=Math.min(CW,WW-i*CW),h=Math.min(CW,WH-j*CW);ctx.drawImage(chunk(si,hash2(i,j)%NV),0,0,w/CS,h/CS,i*CW,j*CW,w,h)}
+ const P=STG[si].P;ctx.fillStyle=P.o;ctx.fillRect(-18,-18,WW+36,18);ctx.fillRect(-18,WH,WW+36,18);ctx.fillRect(-18,0,18,WH);ctx.fillRect(WW,0,18,WH);
+ ctx.fillStyle=P.i;for(let i=0;i<WW;i+=24){ctx.fillRect(i,-12,12,6);ctx.fillRect(i+12,WH+6,12,6)}for(let j=0;j<WH;j+=24){ctx.fillRect(-12,j,6,12);ctx.fillRect(WW+6,j+12,6,12)}
+ ctx.fillStyle='#ff5fa8';ctx.fillRect(0,-3,WW,3);ctx.fillRect(0,WH,WW,3);ctx.fillRect(-3,0,3,WH);ctx.fillRect(WW,0,3,WH)}
+function shadow(x,y,w){ctx.fillStyle='rgba(90,10,50,.32)';ctx.fillRect(Math.round(x-w/2),Math.round(y),Math.round(w),4);ctx.fillRect(Math.round(x-w/2+3),Math.round(y-2),Math.round(w-6),8)}
+function heroSprite(id,fr,blink){return blink?HF[id].b:HF[id].f[fr]}
+function drawWorld(){const g=G,p=g.p,t=g.t,s=g.st;
+ /* hormone aura */
+ if(s.shield){const R=84+s.shield*18,n=Math.floor(R/6);ctx.fillStyle='rgba(176,122,255,.08)';ctx.beginPath();ctx.arc(p.x,p.y,R,0,TAU);ctx.fill();ctx.fillStyle='rgba(216,186,255,.75)';
+  for(let i=0;i<n;i++){const a=i*TAU/n+t*.6;if(i%3)ctx.fillRect(Math.round(p.x+Math.cos(a)*R-1.5),Math.round(p.y+Math.sin(a)*R-1.5),3,3)}}
+ for(const r of g.rg){ctx.globalAlpha=Math.max(0,r.l/r.ml);ctx.strokeStyle=r.c||'#ff5fa8';ctx.lineWidth=r.w||4;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,TAU);ctx.stroke()}ctx.globalAlpha=1;
+ for(const m of g.gm){const c=GEMS[m.v>=10?2:m.v>=3?1:0];dsp(c,m.x,m.y+Math.sin(t*5+m.ph)*2,SC-1,1)}
+ for(const q of g.pk){if(q.l<4&&Math.floor(q.l*8)%2)continue;const c=q.t==='h'?HEART:q.t==='r'?RIBBON:q.t==='m'?MAGNET:q.t==='i'?LEAF:CHEST,y=q.y+Math.sin(t*4+q.x)*3;
+  ctx.fillStyle=q.t==='c'?'rgba(255,209,102,.25)':'rgba(255,240,247,.14)';const gl=12+Math.sin(t*6)*3;ctx.fillRect(Math.round(q.x-gl),Math.round(y-gl),gl*2|0,gl*2|0);
+  shadow(q.x,q.y+16,16);dsp(c,q.x,y,SC,1);
+  if(q.t==='c'&&Math.floor(t*4)%2){ctx.fillStyle='#fff';ctx.fillRect(Math.round(q.x+14),Math.round(y-16),3,3)}}
+ for(const sl of g.sl){const k=1-sl.l/.28;ctx.lineWidth=10*(1-k)+2;ctx.strokeStyle=k<.4?'#ffffff':'#ff5fa8';ctx.beginPath();ctx.arc(sl.x,sl.y,sl.R*(.7+.3*k),sl.a-1.15,sl.a-1.15+2.3*Math.min(1,k*3));ctx.stroke()}
+ /* enemies */
+ for(const e of g.en){const sz=SC*e.sz,F=ENF[e.k];
+  if(e.w>0){ctx.globalAlpha=.6;ctx.strokeStyle='#ffc2e0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,e.r+e.w*40,0,TAU);ctx.stroke();ctx.globalAlpha=.35+.2*Math.sin(t*30)}
+  else if(e.cl>0){ctx.globalAlpha=SAVE.set.fx?.14+.08*Math.sin(t*20):.2}
+  if(e.c>.35){ctx.strokeStyle='rgba(255,63,79,.4)';ctx.lineWidth=e.r*1.2;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+e.ax*620,e.y+e.ay*620);ctx.stroke()}
+  shadow(e.x,e.y+e.r*.85,e.r*1.4);
+  const fr=Math.floor(e.ph*(e.k==='swarm'?9:e.B?4:6))%4,bob=Math.round(Math.sin(t*6+e.x)*1.5);
+  if(e.el){ctx.fillStyle='rgba(255,209,102,'+(.12+.06*Math.sin(t*6))+')';ctx.beginPath();ctx.arc(e.x,e.y,e.r*1.3,0,TAU);ctx.fill()}
+  if(e.k==='finalboss'){ctx.fillStyle=['rgba(176,80,255,.18)','rgba(255,140,60,.22)','rgba(255,40,80,.28)'][e.ph2||0];ctx.beginPath();ctx.arc(e.x,e.y,e.r*1.35+Math.sin(t*5)*4,0,TAU);ctx.fill()}
+  dsp(e.slp?F.s[fr]:e.el?F.g[fr]:F.f[fr],e.x,e.y+bob,sz,e.face);if(e.f>0){const ga=ctx.globalAlpha;ctx.globalAlpha=ga*.7;dsp(F.w[fr],e.x,e.y+bob,sz,e.face);ctx.globalAlpha=ga}
+  ctx.globalAlpha=1;
+  if(e.sh>0){for(let i=0;i<8;i++){const a=t*1.6+i*TAU/8,rx=Math.round(e.x+Math.cos(a)*(e.r+7)),ry=Math.round(e.y+Math.sin(a)*(e.r+7));ctx.fillStyle=INK;ctx.fillRect(rx-5,ry-5,10,10);ctx.fillStyle='#ffe9a8';ctx.fillRect(rx-4,ry-4,8,8);ctx.fillStyle='#fff';ctx.fillRect(rx-4,ry-4,3,3)}
+   if(e.sh<e.msh){const w=e.r*1.4;ctx.fillStyle=INK;ctx.fillRect(Math.round(e.x-w/2-1),Math.round(e.y-e.r-18),Math.round(w+2),5);ctx.fillStyle='#ffe9a8';ctx.fillRect(Math.round(e.x-w/2),Math.round(e.y-e.r-17),Math.round(w*e.sh/e.msh),3)}}
+  if(e.slp){ctx.globalAlpha=.85;const zz=(t*14+e.x)%18;txt('z',e.x+e.r*.6+zz*.3,e.y-e.r-4-zz,'#dce2ff',PX10);ctx.globalAlpha=1}
+  if(e.el||((e.k==='tank')&&e.hp<e.mhp)){const w=e.r*1.4;ctx.fillStyle=INK;ctx.fillRect(Math.round(e.x-w/2-1),Math.round(e.y-e.r-12),Math.round(w+2),5);ctx.fillStyle=e.el?'#ffd166':'#c490e0';ctx.fillRect(Math.round(e.x-w/2),Math.round(e.y-e.r-11),Math.round(w*e.hp/e.mhp),3)}}
+ for(const b of g.eb){const s2=b.big?8:6,pu=Math.floor(t*10)%2;ctx.fillStyle='#4a0a24';ctx.fillRect(Math.round(b.x-s2),Math.round(b.y-s2/2),s2*2,s2);ctx.fillRect(Math.round(b.x-s2/2),Math.round(b.y-s2),s2,s2*2);
+  ctx.fillStyle=pu?'#ff3f4f':'#ff7a8a';ctx.fillRect(Math.round(b.x-s2/2),Math.round(b.y-s2/2),s2,s2);ctx.fillStyle='#ffd6d6';ctx.fillRect(Math.round(b.x-2),Math.round(b.y-2),2,2)}
+ for(const b of g.b){const ux=b.vx/640,uy=b.vy/640;ctx.fillStyle='rgba(255,95,168,.35)';ctx.fillRect(Math.round(b.x-ux*16-3),Math.round(b.y-uy*16-3),6,6);ctx.fillStyle='#ff5fa8';ctx.fillRect(Math.round(b.x-ux*8-4),Math.round(b.y-uy*8-4),8,8);
+  ctx.fillStyle=INK;ctx.fillRect(Math.round(b.x-7),Math.round(b.y-7),14,14);ctx.fillStyle='#ff5fa8';ctx.fillRect(Math.round(b.x-5),Math.round(b.y-5),10,10);ctx.fillStyle='#fff';ctx.fillRect(Math.round(b.x-2),Math.round(b.y-2),5,5)}
+ for(let i=0;i<s.blades;i++){const a=g.bl+i*TAU/s.blades;dsp(HEART,p.x+Math.cos(a)*66,p.y+Math.sin(a)*66,SC,1)}
+ for(const b of g.bm){ctx.save();ctx.translate(Math.round(b.x),Math.round(b.y));ctx.rotate(Math.round(t*12)*Math.PI/4);ctx.drawImage(RIBBON,-RIBBON.width*1.5,-RIBBON.height*1.5,RIBBON.width*3,RIBBON.height*3);ctx.restore()}
+ for(const b of g.hm){ctx.save();ctx.translate(Math.round(b.x),Math.round(b.y));ctx.rotate(Math.round((Math.atan2(b.vy,b.vx)+Math.PI/2)/(Math.PI/4))*Math.PI/4);ctx.drawImage(AB,-AB.width,-AB.height,AB.width*2,AB.height*2);ctx.restore()}
+ for(const z of g.zap){for(const[w,c]of[[7,'rgba(110,240,210,.45)'],[3,'#f0fffb']]){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();z.pts.forEach((q,i)=>{const x=q[0]+(i?rnd(-4,4):0),y=q[1]+(i?rnd(-4,4):0);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}}
+ if(g.tsT>0){ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.globalCompositeOperation='saturation';ctx.fillStyle='#808080';ctx.fillRect(0,0,W,H);
+  ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(70,40,150,.22)';ctx.fillRect(0,0,W,H);ctx.restore();
+  const R0=40+4*Math.sin(performance.now()/120);ctx.strokeStyle='rgba(201,184,255,.7)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,R0,0,TAU);ctx.stroke();
+  const a=-Math.PI/2+(1-g.tsT/5)*TAU;ctx.strokeStyle='#ffd166';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+Math.cos(a)*R0,p.y+Math.sin(a)*R0);ctx.stroke()}
+ /* hero */
+ const H0=g.hero,mfr=p.mv?Math.floor(p.an)%4:Math.floor(p.an)%2;
+ for(const tr of g.trail){ctx.globalAlpha=tr.l/.22*.6;dsp(HF[H0].t[tr.fr],tr.x,tr.y,SC,tr.face)}ctx.globalAlpha=1;
+ if(S!=='dying'&&S!=='over'){
+  shadow(p.x,p.y+16,24);
+  const f=1-Math.max(0,p.dc)/p.dcd;if(f<1){ctx.fillStyle='rgba(110,240,210,.85)';const n=16;for(let i=0;i<n*f;i++){const a=-Math.PI/2+i*TAU/n;ctx.fillRect(Math.round(p.x+Math.cos(a)*28-1.5),Math.round(p.y+Math.sin(a)*28-1.5),3,3)}}
+  const blink=p.inv>0&&p.inv<.6&&Math.floor(t*20)%2;ctx.globalAlpha=blink?.4:1;
+  dsp(p.inv>.55&&p.dash<=0?HF[H0].w[mfr]:heroSprite(H0,mfr,p.blk<0),p.x,p.y,SC,p.face);ctx.globalAlpha=1}
+ for(const q of g.pt){ctx.globalAlpha=Math.max(0,q.l/q.ml);ctx.fillStyle=q.c;ctx.fillRect(Math.round(q.x),Math.round(q.y),q.s,q.s)}ctx.globalAlpha=1;
+ ctx.font=PX10;ctx.textAlign='center';for(const d of g.dn){ctx.globalAlpha=Math.min(1,d.l*2);ctx.fillStyle=INK;ctx.fillText(d.s,Math.round(d.x)+1,Math.round(d.y)+1);ctx.fillStyle=d.c;ctx.fillText(d.s,Math.round(d.x),Math.round(d.y))}ctx.globalAlpha=1}
+function drawMotes(dt){ctx.fillStyle='rgba(255,255,255,.55)';for(const m of motes){m.y+=m.z*.012*dt;if(m.y>1.05){m.y=-.05;m.x=Math.random()}
+ const x=((m.x*W-CAM.x*Z*m.z*.4)%W+W)%W,y=((m.y*H-CAM.y*Z*m.z*.4)%H+H)%H;ctx.fillRect(Math.round(x),Math.round(y),m.s*2,m.s*2)}}
+function vignette(){if(!vig){vig=mk(Math.max(1,W|0),Math.max(1,H|0));const x=vig.getContext('2d'),gr=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);
+ gr.addColorStop(0,'rgba(10,4,20,0)');gr.addColorStop(1,'rgba(110,20,70,.42)');x.fillStyle=gr;x.fillRect(0,0,W,H)}ctx.drawImage(vig,0,0,W,H)}
+function pbar(x,y,w,h,f,c,bg='#2a1d4f'){ctx.fillStyle=INK;ctx.fillRect(x-2,y-2,w+4,h+4);ctx.fillStyle=bg;ctx.fillRect(x,y,w,h);ctx.fillStyle=c;ctx.fillRect(x,y,Math.round(w*clamp(f,0,1)),h);ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(x,y,Math.round(w*clamp(f,0,1)),2)}
+function txt(s,x,y,c,font=PX10,al='left'){ctx.font=font;ctx.textAlign=al;ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.strokeText(s,x,y);ctx.fillStyle=INK;ctx.fillText(s,x+2,y+2);ctx.fillStyle=c;ctx.fillText(s,x,y)}
+function arrow(x,y,col){const sx=(x-CAM.x)*Z,sy=(y-CAM.y)*Z;if(sx>8&&sx<W-8&&sy>8&&sy<H-8)return;
+ const dx=sx-W/2,dy=sy-H/2,k=Math.min((W/2-26)/Math.abs(dx||1e-6),(H/2-26-SAFE.t)/Math.abs(dy||1e-6));
+ ctx.save();ctx.translate(Math.round(W/2+dx*k),Math.round(H/2+dy*k));ctx.rotate(Math.atan2(dy,dx));ctx.fillStyle=col;ctx.strokeStyle=INK;ctx.lineWidth=3;
+ ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-9);ctx.lineTo(-7,9);ctx.closePath();ctx.stroke();ctx.fill();ctx.restore()}
+function hud(){const g=G,p=g.p,s=g.st,T=SAFE.t+12,L=12;
+ /* portrait */
+ ctx.fillStyle=INK;ctx.fillRect(L-2,T-2,52,52);ctx.fillStyle='#2e2058';ctx.fillRect(L,T,48,48);ctx.drawImage(heroSprite(g.hero,Math.floor(performance.now()/300)%2,p.blk<0),L-2,T-2,52,52);
+ const bw=H<440?Math.min(160,W*.25):Math.min(220,W*.42);
+ pbar(L+60,T+2,bw,14,p.hp/p.mhp,p.hp/p.mhp>.3?'#ff5fa8':(Math.floor(g.t*6)%2?'#ff3b3b':'#ff8a9a'));
+ txt(Math.ceil(p.hp)+'/'+p.mhp,L+66,T+14,'#fff0f7',PX8);
+ pbar(L+60,T+26,bw,8,g.xp/g.need,'#ffd166');
+ txt('LV '+g.lvl,L+60,T+50,'#ffd166',PX8);txt(fmt(g.t),L+60+bw,T+50,'#fff0f7',PX8,'right');
+ txt('Stage '+(g.stage+1)+'/'+STG.length+': '+STG[g.stage].n,L,T+70,'#fff0f7',PX8);
+ {const bk=STG[g.stage].boss;txt(g.bossOn===2?'All stages cleared':g.bossOn?'Boss: '+INFO[bk].n:'Boss in '+Math.max(0,Math.ceil(STG[g.stage].bossAt-(g.t-g.stT0)))+'s',L,T+86,g.bossOn?'#ff8a9a':'#ffc2e0',PX8)}
+ /* owned upgrades */
+ let ix=L,iy=T+96;for(const u of UPS){const lv=g.up[u.id];if(!lv)continue;const ic=icon(u.id).c;ctx.drawImage(ic,ix,iy,ic.width*2,ic.height*2);txt(String(lv),ix+ic.width*2-2,iy+ic.height*2+2,'#fff0f7',PX8);ix+=ic.width*2+8;if(ix>L+bw+40){ix=L;iy+=ic.height*2+10}}
+ /* score */
+ txt(String(g.score),W-12,T+16,'#fff0f7',PX16,'right');
+ if(g.chain>2)txt('x'+(1+Math.min(g.chain,100)/20).toFixed(1)+' chain '+g.chain,W-12,T+36,'#ffd166',PX8,'right');
+ /* minimap */
+ const mw=Math.min(118,W*.28),mh=mw*WH/WW,mx=W-12-mw,my=T+46,sx=mw/WW,sy=mh/WH;
+ ctx.fillStyle=INK;ctx.fillRect(mx-3,my-3,mw+6,mh+6);ctx.fillStyle='rgba(30,18,60,.85)';ctx.fillRect(mx,my,mw,mh);
+ ctx.fillStyle='rgba(255,95,168,.7)';for(const e of g.en)ctx.fillRect(mx+e.x*sx|0,my+e.y*sy|0,1,1);
+ ctx.fillStyle='#ffd166';for(const q of g.pk)ctx.fillRect(mx+q.x*sx-1|0,my+q.y*sy-1|0,2,2);
+ const boss=g.en.find(e=>e.B);if(boss){ctx.fillStyle='#ff3f4f';ctx.fillRect(mx+boss.x*sx-2|0,my+boss.y*sy-2|0,5,5)}
+ ctx.strokeStyle='rgba(255,240,247,.5)';ctx.lineWidth=1;ctx.strokeRect((mx+CAM.x*sx|0)+.5,(my+CAM.y*sy|0)+.5,VW()*sx|0,VH()*sy|0);
+ ctx.fillStyle='#fff';ctx.fillRect(mx+p.x*sx-1|0,my+p.y*sy-1|0,3,3);
+ if(s.tstop){const ty0=my+mh+22,act=g.tsT>0,f=act?g.tsT/5:1-Math.max(0,g.tsCD)/15;pbar(mx,ty0,mw,8,f,act?'#ffd166':'#c9b8ff');
+  txt(act?'Time stopped':g.tsCD>0?'Time stop '+Math.ceil(g.tsCD)+'s':'Time stop ready [T]',W-12,ty0+24,act||g.tsCD<=0?'#ffd166':'#cdb4d8',PX8,'right')}
+ /* boss bar */
+ if(boss){const short=H<440,bx0=L+60+bw+20,w=short?Math.max(100,W-12-mw-20-bx0):Math.min(380,W-60),x=short?bx0:(W-w)/2|0,y=short?T+18:H-SAFE.b-(matchCoarse||W<700?132:44);pbar(x,y,w,10,boss.hp/boss.mhp,'#ff3f4f');txt(INFO[boss.k].n,x+w/2,y-8,'#ffc2e0',PX8,'center');arrow(boss.x,boss.y,'#ff3f4f')}
+ for(const q of g.pk)if(q.t==='c'||q.t==='h')arrow(q.x,q.y,q.t==='c'?'#ffd166':'#ff3b7a');
+ /* center messages */
+ for(const t of g.tx){ctx.globalAlpha=Math.min(1,t.l);txt(t.s,W/2,H*.28,'#ffc2e0',W<500?PX10:'14px "Press Start 2P",monospace','center')}ctx.globalAlpha=1;
+ if(g.intro>0){const n=g.intro>.5?Math.ceil(g.intro/.63):0;txt(n?String(Math.min(3,n)):'GO!',W/2,H*.42,'#ffc2e0','40px "Press Start 2P",monospace','center');txt(HEROES.find(h=>h.id===g.hero).n,W/2,H*.42+40,'#ffd166',PX10,'center')}
+ if(joy&&S==='play'){ctx.strokeStyle='rgba(255,240,247,.3)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(joy.ox,joy.oy,60,0,TAU);ctx.stroke();const d=Math.hypot(joy.x-joy.ox,joy.y-joy.oy)||1,k=Math.min(d,60)/d;ctx.fillStyle='rgba(255,194,224,.45)';ctx.fillRect(Math.round(joy.ox+(joy.x-joy.ox)*k-14),Math.round(joy.oy+(joy.y-joy.oy)*k-14),28,28)}}
+const matchCoarse=(()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}})();
+function parade(dt){menuT+=dt;const ids=HEROES.filter(h=>SAVE.heroes[h.id]).map(h=>h.id),y=H-SAFE.b-46,span=W+ids.length*70+200,x0=((menuT*70)%span)-ids.length*70-80;
+ const fr=Math.floor(menuT*8)%4;dsp(ENF.drift.f[Math.floor(menuT*6)%4],x0+ids.length*70+70,y+Math.sin(menuT*8)*3,SC,-1);
+ ids.forEach((id,i)=>{const x=x0+(ids.length-1-i)*70;shadow(x,y+16,24);dsp(HF[id].f[(fr+i)%4],x,y,SC,1)})}
+function draw(dt){
+ ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
+ const inRun=G&&S!=='menu';const si=inRun?G.stage:menuStage;
+ if(inRun){const p=G.p,tx=clamp(p.x-VW()/2,-40,WW-VW()+40),ty=clamp(p.y-VH()/2,-40,WH-VH()+40);CAM.x+=(tx-CAM.x)*Math.min(1,dt*10);CAM.y+=(ty-CAM.y)*Math.min(1,dt*10)}
+ else{CAM.x=clamp(CAM.x+dt*18,0,WW-VW());CAM.y=clamp(WH/2-VH()/2+Math.sin(menuT*.2)*200,0,WH-VH());if(CAM.x>=WW-VW()-1)CAM.x=0}
+ let sx=0,sy=0;if(inRun&&SAVE.set.fx&&G.shake>.3){sx=rnd(-1,1)*G.shake;sy=rnd(-1,1)*G.shake}
+ ctx.save();ctx.scale(Z,Z);ctx.translate(Math.round(-CAM.x+sx),Math.round(-CAM.y+sy));
+ drawBG(si);if(inRun)drawWorld();
+ ctx.restore();
+ drawMotes(dt);vignette();
+ if(!inRun){parade(dt);return}
+ if(G.p.hp/G.p.mhp<.3&&S==='play'){ctx.fillStyle='rgba(255,0,60,'+(SAVE.set.fx?.08+.05*Math.sin(G.t*8):.08)+')';ctx.fillRect(0,0,W,H)}
+ if(SAVE.set.fx&&G.flash>0){ctx.fillStyle='rgba(255,60,90,'+G.flash*.35+')';ctx.fillRect(0,0,W,H)}
+ hud()}
+
+/* =================== UI =================== */
+let page='home',ltab='cells',QZ=null,thumbs=[],shownAt=0,resetArm=0;
+function show(h,cls){ov.innerHTML='<div class="panel'+(cls?' '+cls:'')+'">'+h+'</div>';ov.classList.remove('off');ov.scrollTop=0;shownAt=performance.now();resetArm=0;
+ thumbs=[...ov.querySelectorAll('canvas[data-spr]')];drawThumbs();
+ if((S==='menu'||S==='pause')&&!matchCoarse){const b=ov.querySelector('.btn');if(b)b.focus({preventScroll:true})}}
+function hide(){ov.classList.add('off');ov.innerHTML='';thumbs=[]}
+function tip(t,s,sec=6){if(S==='menu')return;tipEl.innerHTML='<b>'+t+'</b>'+s;tipEl.classList.add('on');tipT=sec}
+function drawThumbs(){const now=performance.now();for(const c of thumbs){const[t,k]=c.dataset.spr.split(':'),x=c.getContext('2d');x.imageSmoothingEnabled=false;x.clearRect(0,0,c.width,c.height);let img;
+ if(t==='h'||t==='hl')img=HF[k].f[Math.floor(now/150)%4];else{const kk=k==='elite'?'drift':k,fr=Math.floor(now/(kk==='swarm'?110:170))%4;img=k==='elite'?ENF.drift.g[fr]:ENF[kk].f[fr]}
+ const z=Math.max(1,Math.floor(Math.min(c.width,c.height)/(Math.max(img.width,img.height)*(t[0]==='h'?.72:.9))));x.globalAlpha=t==='hl'?.3:1;
+ x.drawImage(img,(c.width-img.width*z)/2|0,(c.height-img.height*z)/2|0,img.width*z,img.height*z);x.globalAlpha=1}}
+const hopeTag=()=>'<b style="color:var(--gold);font-weight:600">'+SAVE.hope+'</b>';
+function sprC(spec,s){return '<canvas class="spr" data-spr="'+spec+'" width="'+s+'" height="'+s+'" style="width:'+s+'px;height:'+s+'px;flex:none"></canvas>'}
+
+function menu(){S='menu';G=null;document.body.classList.remove('play');page='home';tipEl.classList.remove('on');tipT=0;
+ const h=HEROES.find(x=>x.id===SAVE.hero&&SAVE.heroes[x.id])||HEROES[0];
+ show('<h1>Ribbon Guardians</h1><p>Lead a team of immune cells through breast tissue. Clear rogue cells, power up with real treatments, and learn how people find, treat and beat breast cancer.</p>'
+ +'<div style="display:flex;gap:14px;align-items:center;justify-content:center;margin:12px auto;max-width:520px">'+sprC('h:'+h.id,84)+'<div style="text-align:left"><div class="nm">'+h.n+'</div><p class="small" style="margin:6px 0 0">'+h.role+'. '+h.perk+'</p></div></div>'
+ +'<button class="btn" data-a="play" style="font-size:14px;padding:16px 34px">Play</button>'
+ +'<div class="row"><button class="btn alt" data-a="heroes">Heroes</button><button class="btn alt" data-a="perks">Upgrades</button><button class="btn alt" data-a="learn">Learn</button><button class="btn alt" data-a="settings">Settings</button><button class="btn alt" data-a="admin">Admin password</button><button class="btn alt warn" data-a="wipe1">Remove progress</button></div>'
+ +'<div class="stats"><div><b>'+SAVE.hope+'</b>hope</div><div><b>'+SAVE.best+'</b>best score</div><div><b>'+CELLS.filter(k=>SAVE.seen[k]).length+'/'+CELLS.length+'</b>cells studied</div><div><b>'+Object.keys(SAVE.quiz).length+'/'+QUIZ.length+'</b>quiz answers</div></div>'
+ +'<p class="keys"><b>Move</b> WASD, arrows, gamepad or drag anywhere. <b>Dash</b> Space, Shift or the Dash button. Aiming is automatic.</p>'
+ +'<p class="small" style="color:var(--teal)">'+(SYNC.on?'Progress syncs across your phone and computer. Open this same link on both while signed in to Claude.':'Progress is saved on this device.')+'</p>'
+ +'<p class="small">An awareness game, not medical advice. If you notice a change in your body, talk to a doctor.</p>')}
+
+function admin(){page='admin';
+ if(SAVE.admin){show('<h2>Admin power active</h2>'+sprC('h:admin',96)+'<div class="nm">Chrono Guardian</div><p class="small">'+HEROES.find(h=>h.id==='admin').perk+'</p><div class="row"><button class="btn" data-a="adminplay">Play as Chrono Guardian</button><button class="btn alt" data-a="home">Back</button></div>');return}
+ show('<h2>Admin password</h2><p class="small">Enter the admin password to unlock a secret hero.</p><input class="pw" id="apw" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Admin password" maxlength="32"><p class="pwmsg" id="amsg" role="status" aria-live="polite"></p><div class="row"><button class="btn" data-a="adminok">Unlock</button><button class="btn alt" data-a="home">Back</button></div>');
+ const i=document.getElementById('apw');i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminTry()}});if(!matchCoarse)i.focus({preventScroll:true})}
+function adminTry(){const i=document.getElementById('apw'),m=document.getElementById('amsg');if(!i)return;
+ if(i.value==='cancerV1'){SAVE.admin=1;SAVE.heroes.admin=1;SAVE.hero='admin';save();snd(500,.5,'triangle',.07,1600);admin()}
+ else{snd(160,.15,'square',.04);m.style.color='#ff8a9a';m.textContent='Wrong password. Passwords are case-sensitive.';i.select()}}
+function heroes(){page='heroes';show('<h2>Your immune team</h2><p class="small">Every hero is a real immune cell. Unlock them with hope earned in runs and quizzes. You have '+hopeTag()+' hope.</p><div class="cards">'+HEROES.filter(h=>!h.secret||SAVE.heroes[h.id]).map(h=>{const ok=SAVE.heroes[h.id],sel=SAVE.hero===h.id;
+ return '<button class="card'+(sel?' sel':'')+(ok?'':' lock')+'" data-hero="'+h.id+'">'+sprC((ok?'h':'hl')+':'+h.id,84)+'<span class="m">'+(sel?'Selected':ok?'Select':'Unlock for '+h.cost+' hope')+'</span><span class="t">'+h.n+'</span><span class="d">'+h.role+'. '+h.perk+'</span><span class="r">'+h.bio+'</span></button>'}).join('')+'</div><button class="btn" data-a="home">Back</button>')}
+function heroClick(id){const h=HEROES.find(x=>x.id===id);if(!SAVE.heroes[id]){if(SAVE.hope<h.cost){snd(160,.15,'square',.04);const c=ov.querySelector('[data-hero="'+id+'"] .m');if(c)c.textContent='Need '+(h.cost-SAVE.hope)+' more hope';return}
+ SAVE.hope-=h.cost;SAVE.heroes[id]=1;snd(900,.3,'triangle',.06,1400)}else snd(800,.1,'triangle',.05,1200);SAVE.hero=id;save();heroes()}
+
+function perks(){page='perks';show('<h2>Upgrades</h2><p class="small">Permanent boosts for every run. You have '+hopeTag()+' hope.</p><div class="cards">'+PERKS.map(([k,n,d,mx])=>{const lv=SAVE.meta[k]||0,c=lv<mx?perkCost(k,lv):0;
+ return '<button class="card'+(lv>=mx?' sel':'')+'" data-perk="'+k+'"><span class="pips">'+'■'.repeat(lv)+'□'.repeat(mx-lv)+'</span><span class="t">'+n+'</span><span class="d">'+d+'</span><span class="m">'+(lv>=mx?'Maxed':'Costs '+c+' hope')+'</span></button>'}).join('')+'</div><button class="btn" data-a="home">Back</button>')}
+function perkClick(k){const P=PERKS.find(x=>x[0]===k),lv=SAVE.meta[k]||0;if(lv>=P[3])return;const c=perkCost(k,lv);
+ if(SAVE.hope<c){snd(160,.15,'square',.04);const m=ov.querySelector('[data-perk="'+k+'"] .m');if(m)m.textContent='Need '+(c-SAVE.hope)+' more hope';return}
+ SAVE.hope-=c;SAVE.meta[k]=lv+1;save();snd(800,.12,'triangle',.05,1200);perks()}
+
+const TABS=[['cells','Rogue cells'],['team','Immune team'],['treat','Treatments'],['signs','Signs and risk'],['quiz','Quiz']];
+function learnHead(){return '<h2>Learn</h2><div class="tabs" role="tablist">'+TABS.map(([k,n])=>'<button class="tab'+(ltab===k?' on':'')+'" data-tab="'+k+'" role="tab" aria-selected="'+(ltab===k)+'">'+n+'</button>').join('')+'</div>'}
+function learnRender(inner){page='learn';show(learnHead()+inner+'<div class="row"><button class="btn" data-a="home">Back</button></div>')}
+function infoHTML(k,inRun){const d=INFO[k];return '<h2>'+(inRun?'New rogue cell':d.n)+'</h2>'+(inRun?'<div class="nm" style="margin-bottom:6px">'+d.n+'</div>':'')+'<p class="sub">Real term: '+d.sub+'</p>'+sprC('e:'+k,132)
+ +'<div class="sec"><h3>In real life</h3><p>'+d.real+'</p><h3>How people fight it</h3><p>'+d.fight+'</p><h3>In the game</h3><p>'+d.game+'</p></div><div class="fact"><b>Tip</b>'+d.tip+'</div><p class="small">Simplified for a game. Ask a doctor about real health questions.</p>'}
+function learn(tab){if(tab)ltab=tab;let h='';
+ if(ltab==='cells'){const n=CELLS.filter(k=>SAVE.seen[k]).length;h='<p class="small">You have studied '+n+' of '+CELLS.length+' rogue cells. Meet new ones in a run to unlock their pages.</p><div class="cards">'
+  +CELLS.map(k=>SAVE.seen[k]?'<button class="card" data-cell="'+k+'">'+sprC('e:'+k,64)+'<span class="t">'+INFO[k].n+'</span><span class="r">'+INFO[k].sub+'</span></button>':'<button class="card lock" disabled><span class="t">???</span><span class="d">Not met yet</span></button>').join('')+'</div>'}
+ if(ltab==='team')h='<p class="small">Your heroes are based on real white blood cells that defend the body.</p><div class="sec">'+HEROES.filter(x=>!x.secret||SAVE.heroes[x.id]).map(x=>'<div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0">'+sprC('h:'+x.id,56)+'<div><div class="nm">'+x.n+'</div><p>'+x.bio+'</p></div></div>').join('')+'</div>';
+ if(ltab==='treat')h='<p class="small">Every in-run upgrade is named after a real part of prevention, treatment or support.</p><div class="sec">'+UPS.map(u=>'<div style="display:flex;gap:12px;align-items:flex-start;margin:10px 0"><img class="ico" src="'+icon(u.id).u+'" width="40" height="40" alt="" style="flex:none"><div><div class="nm">'+u.n+'</div><p>'+u.real+' <span style="color:var(--dim)">In the game: '+u.d.toLowerCase()+'.</span></p></div></div>').join('')
+  +'<h3>Evolutions</h3><p>Combine the right upgrades in a run and they evolve into something stronger, just as doctors combine treatments.</p>'+EVO.map(v=>'<p><span class="nm">'+v.n+'</span><br><span style="color:var(--gold)">'+v.need+'.</span> '+v.real+'</p>').join('')+'</div>';
+ if(ltab==='signs')h='<div class="sec"><h3>Signs to get checked</h3><ul class="list">'+SIGNS.map(s=>'<li>'+s+'</li>').join('')+'</ul><p>These changes are often caused by something other than cancer, but a doctor should check any new change. Some breast cancers cause no symptoms at all, which is why screening matters.</p>'
+  +'<h3>Lowering risk</h3><ul class="list"><li>Stay physically active</li><li>Limit alcohol</li><li>Keep a healthy weight</li><li>Know your family history and share it with your doctor</li><li>Ask when screening is right for you</li></ul>'
+  +'<h3>Supporting someone</h3><p>Offer specific help, like meals, rides or childcare. Listen without trying to fix everything. Keep checking in after treatment ends.</p></div>'+LINKS;
+ if(ltab==='quiz'){if(!QZ||QZ.run)QZ={i:qIndex(),run:false,done:false};return renderQuiz()}
+ learnRender(h)}
+
+/* ---------- quiz ---------- */
+function qIndex(not){let pool=QUIZ.map((q,i)=>i).filter(i=>!SAVE.quiz[i]&&i!==not);if(!pool.length)pool=QUIZ.map((q,i)=>i).filter(i=>i!==not);return pick1(pool)}
+function openQuiz(){S='quiz';QZ={i:qIndex(),run:true,done:false};snd(600,.2,'triangle',.05,900);renderQuiz()}
+function renderQuiz(){const q=QUIZ[QZ.i];
+ let h=(QZ.run?'<h2>Check-up question</h2><p class="small">You cleared the tumor. Answer correctly to heal 30 and earn 10 hope.</p>':'<p class="small">Correct so far: '+Object.keys(SAVE.quiz).length+' of '+QUIZ.length+'. Your first correct answer to each question earns 5 hope.</p>')
+  +'<p style="color:var(--fg);font-size:21px;line-height:1.35">'+q.q+'</p><div class="ans">'+q.a.map((a,i)=>'<button class="btn alt'+(QZ.done?(i===q.c?' good':i===QZ.ch?' bad':''):'')+'" data-ans="'+i+'"'+(QZ.done?' disabled':'')+'>'+(i+1)+'. '+a+'</button>').join('')+'</div>';
+ if(QZ.done)h+='<div class="fact"><b>'+(QZ.ok?'Correct':'Not quite')+'</b>'+q.e+'</div>'+(QZ.msg?'<p class="small" style="color:var(--gold)">'+QZ.msg+'</p>':'')+(QZ.run?'<button class="btn" data-a="qdone">Continue</button>':'<button class="btn" data-a="qnext">Next question</button>');
+ if(QZ.run)show(h);else learnRender(h)}
+function answer(i){if(!QZ||QZ.done)return;const q=QUIZ[QZ.i];QZ.done=true;QZ.ch=i;QZ.ok=i===q.c;QZ.msg='';
+ if(QZ.ok){snd(880,.2,'triangle',.06,1320);if(QZ.run){G.p.hp=Math.min(G.p.mhp,G.p.hp+30);SAVE.hope+=10;QZ.msg='+30 health and +10 hope.'}else if(!SAVE.quiz[QZ.i]){SAVE.hope+=5;QZ.msg='+5 hope.'}SAVE.quiz[QZ.i]=1;save()}
+ else{snd(200,.25,'square',.05,150);if(QZ.run)QZ.msg='No penalty. Every question is a chance to learn.'}
+ renderQuiz()}
+
+/* ---------- in-run modals ---------- */
+function choicesFor(){const n=G.st.choices;const av=UPS.filter(u=>(G.up[u.id]||0)<u.max).sort(()=>Math.random()-.5);let c=av.slice(0,n);
+ if(c.length<n)c=c.concat(FALL.slice().sort(()=>Math.random()-.5).slice(0,n-c.length));return c}
+function openUp(kind){G.upKind=kind;S='up';G.choices=choicesFor();snd(500,.3,'triangle',.06,1000);renderUp()}
+function renderUp(){const g=G,ch=g.choices;
+ show('<h2>'+(g.upKind==='chest'?'Research breakthrough':'Level '+g.lvl)+'</h2><p class="small">'+(g.upKind==='chest'?'The tumor left a research kit behind. Pick one free treatment.':'Choose a treatment to add to your team.')+'</p><div class="cards">'
+ +ch.map((u,i)=>{const lv=g.up[u.id]||0;return '<button class="card" data-pick="'+i+'"><span class="ic"><img class="ico" src="'+icon(u.id).u+'" width="40" height="40" alt=""><span class="m">'+(lv?'Rank '+(lv+1):'New')+'<br>Key '+(i+1)+'</span></span><span class="t">'+u.n+'</span><span class="d">'+u.d+'</span><span class="r">'+u.real+'</span></button>'}).join('')
+ +'</div><div class="row"><button class="btn alt" data-a="reroll"'+(g.rerolls>0?'':' disabled')+'>Second opinion ('+g.rerolls+' left)</button></div><p class="small">A second opinion rerolls these choices. In real life, getting a second medical opinion is common and welcome.</p>','compact')}
+function pick(i){const u=G.choices&&G.choices[i];if(!u||S!=='up')return;u.f(G.st,G.p);G.up[u.id]=(G.up[u.id]||0)+1;snd(700,.12,'triangle',.05,1100);
+ G.p.mhp=Math.round(G.p.mhp);
+ if(G.xp>=G.need){G.xp-=G.need;G.lvl++;G.need=Math.floor(5+G.lvl*3.2);evoCheck();openUp('lvl')}else{resumePlay();evoCheck()}}
+function openInfo(k){S='info';snd(500,.25,'triangle',.06,900);show(infoHTML(k,true)+'<button class="btn" data-a="cont">Continue</button>')}
+function resumePlay(){hide();S='play';last=performance.now();document.body.classList.add('play')}
+function pause(){if(S!=='play')return;S='pause';pauseScreen()}
+function pauseScreen(){page='pause';show('<h2>Paused</h2><p class="small">'+HEROES.find(h=>h.id===G.hero).n+', stage '+(G.stage+1)+' of '+STG.length+', level '+G.lvl+', '+fmt(G.t)+' survived.</p><button class="btn" data-a="resume">Resume</button><div class="row"><button class="btn alt" data-a="settings">Settings</button><button class="btn alt" data-a="restart">Restart</button><button class="btn alt" data-a="quit">Quit to menu</button></div><div class="fact"><b>Did you know?</b>'+pick1(FACTS)+'</div>')}
+function settings(){page='settings';const s=SAVE.set,b=(k,l,v)=>'<button class="btn alt" data-set="'+k+'" style="min-width:min(100%,340px)">'+l+': '+v+'</button>';
+ show('<h2>Settings</h2><div style="display:flex;flex-direction:column;align-items:center;gap:4px">'+b('mute','Sound',s.mute?'off':'on')+b('music','Music',s.music?'on':'off')+b('vol','Volume',Math.round(s.vol*100)+'%')+b('fx','Shake and flashes',s.fx?'on':'off')+b('info','Pause for new cell info',s.info?'on':'off')+'</div>'
+ +'<p class="keys"><b>Shortcuts</b> P pause, M sound, N music, V effects, 1 to 4 pick an upgrade, R second opinion.</p><div class="row">'+(G?'':'<button class="btn alt warn" data-a="wipe1">Remove progress</button>')+'<button class="btn" data-a="'+(G?'pauseback':'home')+'">Back</button></div>')}
+function toggleSet(k){const s=SAVE.set;if(k==='vol')s.vol=s.vol>.9?.6:s.vol>.5?.3:1;else if(k==='mute')s.mute=!s.mute;else s[k]=!s[k];save();applyFx();snd(700,.08,'triangle',.05);settings()}
+function bank(g,won,quit){if(g.banked)return g.banked;const st=SAVE.stats;st.kills+=g.kills;st.long=Math.max(st.long,g.t);if(won)st.wins++;
+ const cl=won?STG.length:g.stage,sh=Math.floor(g.score/50)+(quit?g.lvl-1:g.lvl)*2+cl*8+(won?60:0),nb=g.score>SAVE.best;SAVE.hope+=sh;if(nb)SAVE.best=g.score;save();return g.banked={sh,nb,cl}}
+function endRun(won,quit){const g=G;S='over';g.over=performance.now();document.body.classList.remove('play');tipEl.classList.remove('on');
+ const{sh,nb,cl}=bank(g,won,quit);
+ const tot=Object.values(g.dmgBy).reduce((a,b)=>a+b,0)||1,top=Object.entries(g.dmgBy).sort((a,b)=>b[1]-a[1]).slice(0,5),mx=top.length?top[0][1]:1;
+ snd(won?400:220,.6,'triangle',.07,won?1200:110);
+ show('<h2>'+(won?'The guardians prevail':quit?'Run saved':'The guardians fell this time')+'</h2><p class="small">'+(won?'You cleared all '+STG.length+' stages. Research, screening and support all move us forward.':quit?'You left the run early. Your score and hope still count.':'Every run teaches your team something. Spend your hope and try again.')+'</p>'
+ +'<div class="stats"><div><b>'+g.score+'</b>score</div><div><b>'+cl+'/'+STG.length+'</b>stages</div><div><b>'+fmt(g.t)+'</b>time</div><div><b>'+g.kills+'</b>cells</div><div><b>'+g.lvl+'</b>level</div></div><p style="color:var(--gold)">'+(nb?'New best score! ':'')+'+'+sh+' hope</p>'
+ +(top.length?'<h3 style="text-align:center">Damage by treatment</h3><div class="bars">'+top.map(([k,v])=>'<div class="bar"><span>'+(SRC[k]||k)+'</span><i style="width:'+Math.max(3,v/mx*100)+'%"></i><span>'+Math.round(v/tot*100)+'%</span></div>').join('')+'</div>':'')
+ +'<div class="fact"><b>Remember</b>'+pick1(FACTS)+'</div>'+LINKS+'<button class="btn" data-a="again">Play again</button><button class="btn alt" data-a="home">Menu</button>')}
+
+const ACT={admin,adminok:adminTry,adminplay:newRun,play:newRun,again:()=>{if(performance.now()-G.over>600)newRun()},home:menu,heroes,perks,learn:()=>learn(),settings,
+ resume:()=>{if(S==='pause')resumePlay()},restart:()=>{if(G&&S==='pause')bank(G,false,true);newRun()},quit:()=>{if(G&&S==='pause')endRun(false,true);else menu()},
+ reroll:()=>{if(S==='up'&&G.rerolls>0){G.rerolls--;G.choices=choicesFor();snd(600,.1,'triangle',.05,900);renderUp()}},
+ cont:()=>{if(S==='info')resumePlay()},qdone:()=>{if(S==='quiz')resumePlay()},
+ qnext:()=>{QZ={i:qIndex(QZ&&QZ.i),run:false,done:false};renderQuiz()},learnback:()=>learn(),pauseback:pauseScreen,
+ wipe1:()=>{page='wipe';show('<h2>Remove all progress?</h2><p class="small">This erases your hope, best score, unlocked heroes, upgrades, studied cells, quiz answers, settings and admin power.</p><div class="row"><button class="btn" data-a="home">Cancel</button><button class="btn danger" data-a="wipe2">Yes, remove it</button></div>')},
+ wipe2:()=>{if(page!=='wipe'||performance.now()-shownAt<450)return;page='wipe2';snd(300,.12,'square',.04);show('<h2>Are you really sure?</h2><p class="small">This can’t be undone. All of your progress will be gone for good.</p><div class="row"><button class="btn" data-a="home">No, keep my progress</button><button class="btn danger" data-a="wipego">Yes, erase everything</button></div>')},
+ wipego:()=>{if(page!=='wipe2'||performance.now()-shownAt<450)return;SAVE=JSON.parse(JSON.stringify(DEF));SAVE.wipe=Date.now();save();applyFx();page='wiped';snd(200,.4,'sawtooth',.05,60);
+  show('<h2>Progress removed</h2><p class="small">Everything has been reset. Time for a fresh start.</p><button class="btn" data-a="home">OK</button>')}};
+ov.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const d=b.dataset;
+ if((S==='up'||S==='info'||S==='quiz')&&performance.now()-shownAt<380)return;
+ if(d.pick!==undefined)return pick(+d.pick);if(d.ans!==undefined)return answer(+d.ans);if(d.hero)return heroClick(d.hero);if(d.perk)return perkClick(d.perk);
+ if(d.tab)return learn(d.tab);if(d.cell){page='cell';return show(infoHTML(d.cell,false)+'<button class="btn" data-a="learnback">Back</button>')}
+ if(d.set)return toggleSet(d.set);if(d.a&&ACT[d.a])ACT[d.a](b)});
+
+/* =================== INPUT + LOOP =================== */
+addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='INPUT')return;keys[e.code]=1;
+ if(S==='play'&&(e.code==='Space'||e.code.startsWith('Arrow')))e.preventDefault();
+ if(e.repeat)return;
+ if(e.code==='KeyM'){SAVE.set.mute=!SAVE.set.mute;save()}
+ if(e.code==='KeyN'){SAVE.set.music=!SAVE.set.music;save()}
+ if(e.code==='KeyV'){SAVE.set.fx=!SAVE.set.fx;save();applyFx()}
+ if(e.code==='KeyP'||e.code==='Escape'){if(S==='play')pause();else if(S==='pause'&&page==='pause')resumePlay()}
+ if(performance.now()-shownAt<380)return;
+ const n=+e.key;
+ if(S==='up'){if(n>=1&&n<=4)pick(n-1);else if(e.code==='KeyR')ACT.reroll()}
+ if(S==='quiz'&&QZ&&!QZ.done&&n>=1&&n<=QUIZ[QZ.i].a.length)answer(n-1);
+ else if(S==='quiz'&&QZ&&QZ.done&&e.code==='Enter')ACT.qdone();
+ if(S==='info'&&(e.code==='Enter'||e.code==='Space')){e.preventDefault();ACT.cont()}});
+addEventListener('keyup',e=>keys[e.code]=0);
+addEventListener('blur',()=>{for(const k in keys)keys[k]=0;joy=null;if(S==='play')pause()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S==='play')pause()});
+addEventListener('pointerdown',e=>{if(e.pointerType==='touch')document.body.classList.add('touch')},true);
+cv.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('gesturestart',e=>e.preventDefault());document.addEventListener('dblclick',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{if(S!=='play')return;try{cv.setPointerCapture(e.pointerId)}catch(_){}if(!joy)joy={id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};else dashReq=1});
+cv.addEventListener('pointermove',e=>{if(joy&&joy.id===e.pointerId){joy.x=e.clientX;joy.y=e.clientY}});
+const rel=e=>{if(joy&&joy.id===e.pointerId)joy=null};cv.addEventListener('pointerup',rel);cv.addEventListener('pointercancel',rel);
+document.getElementById('db').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();dashReq=1});
+document.getElementById('tb').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();tsReq=1});
+const hb=document.getElementById('hb');hb.addEventListener('pointerdown',e=>e.stopPropagation());
+hb.addEventListener('click',e=>{const b=e.target.closest('[data-hb]');if(!b)return;if(b.dataset.hb==='p'){S==='play'?pause():S==='pause'&&resumePlay()}else{SAVE.set.mute=!SAVE.set.mute;save()}syncHB()});
+function syncHB(){hb.querySelector('[data-hb=s]').style.opacity=SAVE.set.mute?.45:1}
+let pb=[];
+setInterval(()=>{const gp=navigator.getGamepads&&navigator.getGamepads()[0];if(!gp)return;const b=gp.buttons.map(x=>x.pressed),dn=i=>b[i]&&!pb[i];pb=b;
+ if(S==='up'){if(dn(14)||dn(2))pick(0);else if(dn(12)||dn(0))pick(1);else if(dn(15)||dn(1))pick(2);else if(dn(13)||dn(3))pick(3)}
+ else if(S==='quiz'&&QZ){if(QZ.done){if(dn(0))ACT.qdone()}else for(let i=0;i<4;i++)if(dn(i))answer(i)}
+ else if(S==='info'){if(dn(0))ACT.cont()}
+ else if(S==='menu'&&page==='home'){if(dn(0)||dn(9))newRun()}
+ else if(S==='over'){if(dn(0)||dn(9))ACT.again()}
+ else if(S==='play'&&dn(9))pause();else if(S==='pause'&&dn(9))resumePlay()},100);
+const perf={n:0,s:0,l:0};
+function loop(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;
+ try{
+ if(S==='play'&&G){if(G.hs>0)G.hs-=dt;else upd(dt);perf.n++;perf.s+=(now-perf.l)/1000;if(perf.n>=120){if(perf.s/perf.n>1/42&&!LOWQ){LOWQ=true;PTCAP=260;rs()}perf.n=0;perf.s=0}}
+ else if(S==='dying'&&G){G.dieT-=dt;for(const q of G.pt){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vx*=.95;q.vy*=.95;q.l-=dt}G.pt=G.pt.filter(x=>x.l>0);G.shake*=Math.pow(.003,dt);if(G.dieT<=0)endRun(false)}
+ perf.l=now;
+ if(S==='play'&&tipT>0){tipT-=dt;if(tipT<=0)tipEl.classList.remove('on')}
+ if(S==='menu')menuStage=Math.floor(menuT/24)%STG.length;
+ draw(S==='play'||S==='menu'||S==='dying'?dt:0);if(thumbs.length)drawThumbs();syncHB();
+ }catch(err){console.error(err)}
+ requestAnimationFrame(loop)}
+
+/* =================== CROSS-DEVICE SYNC =================== */
+const SYNC={on:false,doc:null,busy:false,again:false,t:0};
+function canon(o){return JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((r,x)=>(r[x]=v[x],r),{}):v)}
+function cloudPart(s){const c=JSON.parse(JSON.stringify(s));delete c.set;return c}
+function mergeSave(a,b){const n=(a.ts||0)>=(b.ts||0)?a:b,o=n===a?b:a,r=JSON.parse(JSON.stringify(n)),fresh=(o.ts||0)<(n.wipe||0);
+ for(const k of['heroes','seen','quiz'])r[k]=Object.assign({},fresh?{}:o[k]||{},n[k]||{});
+ r.meta=Object.assign({},n.meta||{});if(!fresh)for(const k in(o.meta||{}))r.meta[k]=Math.max(r.meta[k]||0,o.meta[k]||0);
+ r.stats=Object.assign({},DEF.stats,n.stats||{});if(!fresh)for(const k in(o.stats||{}))r.stats[k]=Math.max(r.stats[k]||0,o.stats[k]||0);
+ r.best=fresh?(n.best||0):Math.max(a.best||0,b.best||0);r.wipe=Math.max(a.wipe||0,b.wipe||0);r.ts=Math.max(a.ts||0,b.ts||0);r.heroes.tcell=1;if(!r.heroes[r.hero])r.hero='tcell';if(typeof r.hope!=='number')r.hope=0;return r}
+function adopt(remote){const set=SAVE.set,m=mergeSave(cloudPart(SAVE),remote);m.set=set;for(const k of['meta','heroes','seen','quiz','stats'])m[k]=Object.assign({},DEF[k],m[k]);SAVE=m;
+ try{localStorage.setItem(SKEY,JSON.stringify(SAVE))}catch(e){}
+ if(canon(cloudPart(SAVE))!==canon(remote)){SAVE.ts=Date.now();cloudPush()}
+ if(S==='menu'){if(page==='home')menu();else if(page==='heroes')heroes();else if(page==='perks')perks()}}
+function cloudPush(){if(!SYNC.on||!SYNC.doc)return;clearTimeout(SYNC.t);SYNC.t=setTimeout(async()=>{if(SYNC.busy){SYNC.again=true;return}SYNC.busy=true;
+ try{await SYNC.doc.set(cloudPart(SAVE))}catch(e){if(e&&/not_granted|permission|denied/i.test(String(e.code||e.message))){SYNC.on=false;if(S==='menu'&&page==='home')menu()}}
+ SYNC.busy=false;if(SYNC.again){SYNC.again=false;cloudPush()}},1200)}
+(async()=>{try{if(!window.claude||typeof window.claude.use!=='function')return;const[db,user]=await Promise.all([window.claude.use('db'),window.claude.use('user')]);if(!db||!user)return;
+ const id=await user.id();if(!id)return;SYNC.doc=db.doc('data/users/'+id+'/save');const snap=await SYNC.doc.get();SYNC.on=true;
+ if(snap.exists)adopt(JSON.parse(JSON.stringify(snap.data())));else cloudPush();
+ SYNC.doc.onSnapshot(s=>{if(!s.exists||s.metadata.hasPendingWrites)return;const r=s.data();if((r.ts||0)>(SAVE.ts||0))adopt(JSON.parse(JSON.stringify(r)))},()=>{});
+ if(S==='menu'&&page==='home')menu()}catch(e){SYNC.on=false}})();
+applyFx();
+if(document.fonts&&document.fonts.load)document.fonts.load('10px "Press Start 2P"').catch(()=>{});
+menu();requestAnimationFrame(t=>{last=t;loop(t)});
+</script>
+</body></html>
